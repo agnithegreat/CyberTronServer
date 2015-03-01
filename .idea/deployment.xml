@@ -5,14 +5,14 @@
       <paths name="[DEV]">
         <serverdata>
           <mappings>
-            <mapping deploy="/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/admin" />
+            <mapping deploy="/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/apps/CyberTron/" />
           </mappings>
         </serverdata>
       </paths>
       <paths name="[STABLE]">
         <serverdata>
           <mappings>
-            <mapping deploy="/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/admin" />
+            <mapping deploy="/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/apps/CyberTron/" />
           </mappings>
         </serverdata>
       </paths>
