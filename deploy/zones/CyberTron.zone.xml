@@ -18,8 +18,8 @@
   <overrideMaxUserIdleTime>120</overrideMaxUserIdleTime>
   <allowGuestUsers>true</allowGuestUsers>
   <guestUserNamePrefix>Guest#</guestUserNamePrefix>
-  <publicRoomGroups>default</publicRoomGroups>
-  <defaultRoomGroups>default</defaultRoomGroups>
+  <publicRoomGroups>default,game</publicRoomGroups>
+  <defaultRoomGroups>default,game</defaultRoomGroups>
   <defaultPlayerIdGeneratorClass></defaultPlayerIdGeneratorClass>
   <wordsFilter active="false">
     <useWarnings>false</useWarnings>
