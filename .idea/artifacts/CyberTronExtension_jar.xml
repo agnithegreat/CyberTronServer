@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CyberTronExtension:jar">
+    <output-path>$PROJECT_DIR$/deploy/extensions/CyberTron</output-path>
+    <root id="archive" name="CyberTronExtension.jar">
+      <element id="module-output" name="CyberTronServer" />
+    </root>
+  </artifact>
+</component>

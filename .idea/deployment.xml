@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="[DEV]">
+    <serverData>
+      <paths name="[DEV]">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/aghn/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/apps/CyberTron/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="[STABLE]">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/vds/SmartFoxServer_2X/SFS2X" local="$PROJECT_DIR$/deploy" web="/apps/CyberTron/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
