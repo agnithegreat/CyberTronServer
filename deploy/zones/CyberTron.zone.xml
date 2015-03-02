@@ -17,7 +17,7 @@
   <userReconnectionSeconds>0</userReconnectionSeconds>
   <overrideMaxUserIdleTime>120</overrideMaxUserIdleTime>
   <allowGuestUsers>true</allowGuestUsers>
-  <guestUserNamePrefix>Guest#</guestUserNamePrefix>
+  <guestUserNamePrefix>Guest_</guestUserNamePrefix>
   <publicRoomGroups>default,game</publicRoomGroups>
   <defaultRoomGroups>default,game</defaultRoomGroups>
   <defaultPlayerIdGeneratorClass></defaultPlayerIdGeneratorClass>
