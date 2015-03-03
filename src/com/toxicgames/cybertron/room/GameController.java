@@ -25,42 +25,37 @@ public class GameController extends Thread {
 
         try {
             List<User> usersList = extension.getParentRoom().getUserList();
-            int count = 0;
             for (Iterator<User> iter = usersList.iterator(); iter.hasNext();) {
 
 //                List = extension.getParentRoom().
 
                 User roomUser = iter.next();
 
-                int deltaX = (Boolean) roomUser.getProperty(UserProps.X_DIRECTION) ? 1 : -1;
-                int deltaY = (Boolean) roomUser.getProperty(UserProps.Y_DIRECTION) ? 1 : -1;
+                int deltaX = (Integer) roomUser.getProperty(UserPropsEnum.X_DIRECTION);
+                int deltaY = (Integer) roomUser.getProperty(UserPropsEnum.Y_DIRECTION);
 
-                int posX = (Integer) roomUser.getProperty(UserProps.POSX) + deltaX;
-                int posY = (Integer) roomUser.getProperty(UserProps.POSY) + deltaY;
-//                posX = posX + deltaX;
-//                pos = posX + deltaX;
-//                Vec3D newPos = new Vec3D(pos.floatX() + deltaX, pos.floatY() + deltaY);
+                int posX = (Integer) roomUser.getProperty(UserPropsEnum.POSX);
+                int posY = (Integer) roomUser.getProperty(UserPropsEnum.POSY);
 
-                if(posX >= 300 || posX <= 0)
+                if(posX + deltaX <= 300 && posX + deltaX >= 0)
                 {
-                    roomUser.setProperty(UserProps.X_DIRECTION, deltaX * -1 > 0);
+                    roomUser.setProperty(UserPropsEnum.POSX, posX + deltaX);
+                    posX = posX + deltaX;
                 }
 
-                if(posY >= 300 || posY <= 0)
+                if(posY + deltaY <= 300 && posY + deltaY >= 0)
                 {
-                    roomUser.setProperty(UserProps.Y_DIRECTION, deltaY * -1 > 0);
+                    roomUser.setProperty(UserPropsEnum.POSY, posY + deltaY);
+                    posY = posY + deltaY;
                 }
 
-                roomUser.setProperty(UserProps.POSX, posX);
-                roomUser.setProperty(UserProps.POSY, posY);
 
-                UserVariable posXVar = new SFSUserVariable("posX", posX);
-                UserVariable posYVar = new SFSUserVariable("posY", posY);
-//                UserVariable colorVar = new SFSUserVariable("color", (int) Math.random() * 0xFFFFFF);
-
-                extension.getApi().setUserVariables(roomUser, Arrays.asList(posXVar, posYVar), true, false);
-
-
+                UserVariable posXVar = new SFSUserVariable(UserProps.POSX, posX);
+                UserVariable posYVar = new SFSUserVariable(UserProps.POSY, posY);
+                if(deltaX != 0 || deltaY != 0)
+                {
+                    extension.getApi().setUserVariables(roomUser, Arrays.asList(posXVar, posYVar), true, false);
+                }
             }
 
         } catch (Exception e) {
@@ -68,5 +63,18 @@ public class GameController extends Thread {
             ExceptionMessageComposer emc = new ExceptionMessageComposer(e);
             extension.trace(emc.toString());
         }
+    }
+
+    public void moveUser(int id, Integer deltaX, Integer deltaY) {
+
+        User roomUser = extension.getParentRoom().getUserById(id);
+
+        roomUser.setProperty(UserPropsEnum.X_DIRECTION, deltaX);
+        roomUser.setProperty(UserPropsEnum.Y_DIRECTION, deltaY);
+
+//        int posX = (Integer) roomUser.getProperty(UserPropsEnum.POSX) + deltaX;
+//        int posY = (Integer) roomUser.getProperty(UserPropsEnum.POSY) + deltaY;
+//        roomUser.getProperty(UserPropsEnum.X_DIRECTION)
+
     }
 }

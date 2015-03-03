@@ -3,7 +3,6 @@ package com.toxicgames.cybertron.room;
 import com.smartfoxserver.v2.SmartFoxServer;
 import com.smartfoxserver.v2.api.ISFSMMOApi;
 import com.smartfoxserver.v2.core.SFSEventType;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.smartfoxserver.v2.game.SFSGame;
 
@@ -21,6 +20,11 @@ public class GameRoomExtension extends SFSExtension {
     private ScheduledFuture<?> gameTask;
     private ISFSMMOApi mmoapi;
 
+    public GameController getGame()
+    {
+        return game;
+    }
+
     //
     @Override
     public void init() {
@@ -31,7 +35,8 @@ public class GameRoomExtension extends SFSExtension {
         mmoapi = sfs.getAPIManager().getMMOApi();
 
         addEventHandler(SFSEventType.USER_JOIN_ROOM, UserJoinedGameEventHandler.class);
-//        addEventHandler(SFSEventType.USER_LEAVE_ROOM, UserLeaveRoomEventHandler.class);
+
+        addRequestHandler(UserProps.REQ_MOVE, ControlRequestHandler.class);
 //        addEventHandler(SFSEventType.USER_DISCONNECT, UserLeaveRoomEventHandler.class);
 
         game = new GameController(this);
@@ -41,16 +46,16 @@ public class GameRoomExtension extends SFSExtension {
 //        gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 20, TimeUnit.MILLISECONDS);
     }
 
-    public void sendUpdate() {
-
-        SFSObject sfso = SFSObject.newInstance();
-        sfso.putUtfString("MSG","Hello there!");
-
-        send("update", SFSObject.newInstance(), getParentRoom().getPlayersList());
-
-
-
-        trace("UPDATE SENT");
-
-    }
+//    public void sendUpdate() {
+//
+//        SFSObject sfso = SFSObject.newInstance();
+//        sfso.putUtfString("MSG","Hello there!");
+//
+//        send("update", SFSObject.newInstance(), getParentRoom().getPlayersList());
+//
+//
+//
+//        trace("UPDATE SENT");
+//
+//    }
 }
