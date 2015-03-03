@@ -37,7 +37,7 @@ public class GameRoomExtension extends SFSExtension {
         game = new GameController(this);
 
         // Schedule task: 20ms is the 50 fps used by the Flash client;
-        gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 1000, TimeUnit.MILLISECONDS);
+        gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 30, TimeUnit.MILLISECONDS);
 //        gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 20, TimeUnit.MILLISECONDS);
     }
 

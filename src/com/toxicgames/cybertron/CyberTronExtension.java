@@ -23,10 +23,10 @@ public class CyberTronExtension extends SFSExtension {
 //        addEventHandler(SFSEventType.USER_LEAVE_ROOM, UserLeavedEventHandler.class);
 
         // Event handler: user log out
-        addEventHandler(SFSEventType.USER_LOGOUT, UserDisconnectedEventHandler.class);
+//        addEventHandler(SFSEventType.USER_LOGOUT, UserDisconnectedEventHandler.class);
 
         // Event handler: user disconnect
-        addEventHandler(SFSEventType.USER_DISCONNECT, UserDisconnectedEventHandler.class);
+//        addEventHandler(SFSEventType.USER_DISCONNECT, UserDisconnectedEventHandler.class);
     }
 
     @Override
