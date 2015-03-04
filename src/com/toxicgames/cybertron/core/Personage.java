@@ -7,6 +7,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  */
 public class Personage extends GameItem {
 
+    public int color = 0;
+
     public double deltaX = 0;
     public double deltaY = 0;
 

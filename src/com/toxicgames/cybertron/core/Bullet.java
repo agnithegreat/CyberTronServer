@@ -8,16 +8,15 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 public class Bullet extends GameItem {
 
     private int itemId;
-
-    public Bullet(int ownerId, ISFSObject settings) {
-        super(ownerId, settings);
-    }
-
     public void setItemId(int itemId) {
         this.itemId = itemId;
     }
     public int getItemId() {
         return itemId;
+    }
+
+    public Bullet(int ownerId, ISFSObject settings) {
+        super(ownerId, settings);
     }
 
     public double getDirection() {

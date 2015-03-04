@@ -1,16 +1,14 @@
-package com.toxicgames.cybertron.room;
+package com.toxicgames.cybertron.enums;
 
 /**
  * Created by mor on 02.03.2015.
  */
 public enum UserPropsEnum {
-
     POSX,
     POSY,
     COLOR,
-    X_DIRECTION,
-    Y_DIRECTION,
+    DELTAX,
+    DELTAY,
     DIRECTION,
     SPEED
-
 }
