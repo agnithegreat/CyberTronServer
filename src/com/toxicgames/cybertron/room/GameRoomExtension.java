@@ -20,14 +20,14 @@ public class GameRoomExtension extends SFSExtension {
     private ScheduledFuture<?> gameTask;
     private ISFSMMOApi mmoapi;
 
-    public GameController getGame()
-    {
+    public GameController getGame() {
         return game;
     }
 
     //
     @Override
-    public void init() {
+    public void init()
+    {
         room = (SFSGame) this.getParentRoom();
 
         sfs = SmartFoxServer.getInstance();
@@ -37,25 +37,12 @@ public class GameRoomExtension extends SFSExtension {
         addEventHandler(SFSEventType.USER_JOIN_ROOM, UserJoinedGameEventHandler.class);
 
         addRequestHandler(UserProps.REQ_CONTROL, ControlRequestHandler.class);
-//        addEventHandler(SFSEventType.USER_DISCONNECT, UserLeaveRoomEventHandler.class);
 
         game = new GameController(this);
 
-        // Schedule task: 20ms is the 50 fps used by the Flash client;
+        // Schedule task: 30ms is nearly 30 fps used by the Flash client;
         gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 30, TimeUnit.MILLISECONDS);
 //        gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 20, TimeUnit.MILLISECONDS);
     }
 
-//    public void sendUpdate() {
-//
-//        SFSObject sfso = SFSObject.newInstance();
-//        sfso.putUtfString("MSG","Hello there!");
-//
-//        send("update", SFSObject.newInstance(), getParentRoom().getPlayersList());
-//
-//
-//
-//        trace("UPDATE SENT");
-//
-//    }
 }
