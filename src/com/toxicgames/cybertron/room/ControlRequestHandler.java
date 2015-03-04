@@ -1,5 +1,6 @@
 package com.toxicgames.cybertron.room;
 
+import com.smartfoxserver.v2.annotations.MultiHandler;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
@@ -11,13 +12,21 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
  * @author Ing. Ignazio Locatelli
  * @version 1.0
  */
+
+@MultiHandler
 public class ControlRequestHandler extends BaseClientRequestHandler {
 
     @Override
     public void handleClientRequest(User sender, ISFSObject params) {
 
+//        trace(params);
+
+
+
         String requestId = params.getUtfString(SFSExtension.MULTIHANDLER_REQUEST_ID);
-        User user = sender;
+//        trace(SFSExtension.MULTIHANDLER_REQUEST_ID);
+        trace(requestId);
+//        User user = sender;
         GameController game = ((GameRoomExtension) this.getParentExtension()).getGame();
 
         if (requestId.equals(UserProps.REQ_MOVE))

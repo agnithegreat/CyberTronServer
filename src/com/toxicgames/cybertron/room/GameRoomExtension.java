@@ -36,7 +36,7 @@ public class GameRoomExtension extends SFSExtension {
 
         addEventHandler(SFSEventType.USER_JOIN_ROOM, UserJoinedGameEventHandler.class);
 
-        addRequestHandler(UserProps.REQ_MOVE, ControlRequestHandler.class);
+        addRequestHandler(UserProps.REQ_CONTROL, ControlRequestHandler.class);
 //        addEventHandler(SFSEventType.USER_DISCONNECT, UserLeaveRoomEventHandler.class);
 
         game = new GameController(this);

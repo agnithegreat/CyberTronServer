@@ -5,7 +5,8 @@ package com.toxicgames.cybertron.room;
  */
 public class UserProps {
 
-    public static final String REQ_MOVE = "control.move";
+    public static final String REQ_CONTROL = "control";
+    public static final String REQ_MOVE = "move";
 
     public static final String DELTAX = "deltaX";
     public static final String DELTAY = "deltaY";

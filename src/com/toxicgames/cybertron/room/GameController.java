@@ -37,13 +37,15 @@ public class GameController extends Thread {
                 int posX = (Integer) roomUser.getProperty(UserPropsEnum.POSX);
                 int posY = (Integer) roomUser.getProperty(UserPropsEnum.POSY);
 
-                if(posX + deltaX <= 300 && posX + deltaX >= 0)
+
+
+                if(deltaX != 0 && posX + deltaX <= 300 && posX + deltaX >= 0)
                 {
                     roomUser.setProperty(UserPropsEnum.POSX, posX + deltaX);
                     posX = posX + deltaX;
                 }
 
-                if(posY + deltaY <= 300 && posY + deltaY >= 0)
+                if(deltaY != 0 && posY + deltaY <= 300 && posY + deltaY >= 0)
                 {
                     roomUser.setProperty(UserPropsEnum.POSY, posY + deltaY);
                     posY = posY + deltaY;
@@ -68,6 +70,8 @@ public class GameController extends Thread {
     public void moveUser(int id, Integer deltaX, Integer deltaY) {
 
         User roomUser = extension.getParentRoom().getUserById(id);
+
+        extension.trace(deltaX, deltaY);
 
         roomUser.setProperty(UserPropsEnum.X_DIRECTION, deltaX);
         roomUser.setProperty(UserPropsEnum.Y_DIRECTION, deltaY);

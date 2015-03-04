@@ -50,8 +50,6 @@ public class UserJoinedGameEventHandler extends BaseServerEventHandler
 
 		getApi().setUserVariables(user, Arrays.asList(posXVar, posYVar, colorVar));
 
-
-
 //		GameRoomExtension game = (GameRoomExtension) getParentExtension();
 //		game.saveUserPosition(user, new Vec3D((float) Math.random() * 300, (float) Math.random() * 300));
 //
