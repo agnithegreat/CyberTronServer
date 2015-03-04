@@ -32,6 +32,9 @@ public class ControlRequestHandler extends BaseClientRequestHandler {
         if (requestId.equals(UserProps.REQ_MOVE))
         {
             game.moveUser(sender.getId(), params.getInt(UserProps.DELTAX), params.getInt(UserProps.DELTAY));
+        } else if (requestId.equals(UserProps.REQ_SHOT))
+        {
+            game.shotUser(sender.getId(), params.getFloat(UserProps.DIRECTION), params.getInt(UserProps.SPEED));
         }
 
 

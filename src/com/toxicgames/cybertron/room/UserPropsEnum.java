@@ -9,7 +9,8 @@ public enum UserPropsEnum {
     POSY,
     COLOR,
     X_DIRECTION,
-    Y_DIRECTION
-
+    Y_DIRECTION,
+    DIRECTION,
+    SPEED
 
 }

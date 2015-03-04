@@ -81,4 +81,14 @@ public class GameController extends Thread {
 //        roomUser.getProperty(UserPropsEnum.X_DIRECTION)
 
     }
+
+    public void shotUser(int id, Float direction, int speed) {
+
+        User roomUser = extension.getParentRoom().getUserById(id);
+
+        extension.trace(direction);
+
+        roomUser.setProperty(UserPropsEnum.DIRECTION, direction);
+        roomUser.setProperty(UserPropsEnum.SPEED, speed);
+    }
 }
