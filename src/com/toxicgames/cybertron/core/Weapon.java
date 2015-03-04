@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.room.game;
+package com.toxicgames.cybertron.core;
 
 /**
  * Created by kirillvirich on 04.03.15.
