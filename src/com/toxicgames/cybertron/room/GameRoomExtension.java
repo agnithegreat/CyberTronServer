@@ -117,6 +117,7 @@ public class GameRoomExtension extends SFSExtension {
             Bullet bullet = it.next().getValue();
 
             SFSObject bulletData = new SFSObject();
+            bulletData.putInt(UserProps.ID, bullet.getItemId());
             bulletData.putInt(UserProps.POSX, bullet.getX());
             bulletData.putInt(UserProps.POSY, bullet.getY());
             bulletData.putFloat(UserProps.DIRECTION, bullet.getDirection());
