@@ -8,7 +8,7 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.toxicgames.cybertron.enums.ClientRequest;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.core.GameController;
-import com.toxicgames.cybertron.core.GameRoomExtension;
+import com.toxicgames.cybertron.room.GameRoomExtension;
 
 /**
  * UserJoinedEventHandler: manage a user joined event

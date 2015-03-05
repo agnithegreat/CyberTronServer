@@ -5,7 +5,7 @@ import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
 import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
-import com.toxicgames.cybertron.core.GameRoomExtension;
+import com.toxicgames.cybertron.room.GameRoomExtension;
 
 /**
  * UserLeavedEventHandler: manager user leaved events (user exiting a game room)
