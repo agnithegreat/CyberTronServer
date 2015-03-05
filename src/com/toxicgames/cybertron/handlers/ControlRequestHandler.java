@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.room;
+package com.toxicgames.cybertron.handlers;
 
 import com.smartfoxserver.v2.annotations.MultiHandler;
 import com.smartfoxserver.v2.entities.User;
@@ -7,6 +7,8 @@ import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.toxicgames.cybertron.enums.ClientRequest;
 import com.toxicgames.cybertron.enums.UserProps;
+import com.toxicgames.cybertron.core.GameController;
+import com.toxicgames.cybertron.core.GameRoomExtension;
 
 /**
  * UserJoinedEventHandler: manage a user joined event
