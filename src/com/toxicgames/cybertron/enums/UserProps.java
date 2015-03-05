@@ -13,6 +13,7 @@ public class UserProps {
     public static final String SPEED = "speed";
 
     public static final String ID = "id";
+    public static final String USER = "user";
     public static final String WEAPON = "weapon";
     public static final String BULLETS = "bullets";
 }

@@ -68,7 +68,7 @@ public class GameController extends Thread {
 
         ISFSObject settings = new SFSObject();
         settings.putFloat(UserProps.DIRECTION, direction);
-        settings.putFloat(UserProps.SPEED, 50);
+        settings.putFloat(UserProps.SPEED, 200);
         settings.putUtfString(UserProps.WEAPON, "weapon");
         createBullet(ownerId, settings);
     }
@@ -106,8 +106,9 @@ public class GameController extends Thread {
                 for (Iterator<Map.Entry<Integer, Bullet>> it2 = bullets.entrySet().iterator(); it2.hasNext(); ) {
                     Bullet bullet = it2.next().getValue();
 
-                    // Check collision
-                    if (getDistance(personage, bullet) <= 5) {
+                    if (bullet.x < 0 || bullet.x > field.getWidth() || bullet.y < 0 || bullet.y > field.getHeight()) {
+                        bullets.remove(bullet.getItemId());
+                    } else if (getDistance(personage, bullet) <= 5) {
                         bullets.remove(bullet.getItemId());
 
                         hit = true;
