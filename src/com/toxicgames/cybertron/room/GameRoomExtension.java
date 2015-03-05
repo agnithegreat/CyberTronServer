@@ -5,19 +5,24 @@ import com.smartfoxserver.v2.api.ISFSGameApi;
 import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSArray;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.RoomVariable;
+import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.entities.variables.UserVariable;
 import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.smartfoxserver.v2.game.SFSGame;
+import com.toxicgames.cybertron.core.Bullet;
 import com.toxicgames.cybertron.enums.ClientRequest;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.handlers.UserDisconnectedEventHandler;
 import com.toxicgames.cybertron.handlers.UserLeavedEventHandler;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -76,12 +81,6 @@ public class GameRoomExtension extends SFSExtension {
         game.removePersonage(userId);
     }
 
-    public void shotUser(User user, float direction) {
-        ISFSObject settings = new SFSObject();
-        settings.putDouble(UserProps.DIRECTION, direction);
-        game.createBullet(user.getId(), settings);
-    }
-
 
 
     public void setPersonageData(int userId, int x, int y, int color) {
@@ -108,60 +107,25 @@ public class GameRoomExtension extends SFSExtension {
         }
     }
 
-    public int addBullet(String weapon, float x, float y, float direction, float speed) {
-        List<RoomVariable> vars = buildBulletRoomVars(x, y, direction, speed);
-//        vars.add(new MMOItemVariable(IV_MODEL, model));
-//        vars.add(new MMOItemVariable(IV_TYPE, ITYPE_WEAPON));
+    public void setBulletsPositions(int userId, Map<Integer, Bullet> bullets) {
+        User user = room.getUserById(userId);
 
-//        MMOItem item = new MMOItem(vars);
-//
-//        return item.getId();
-        return 0;
-    }
-
-    public void removeBullet(int mmoItemId) {
-//        BaseMMOItem item = room.getMMOItemById(mmoItemId);
-//
-//        gameApi.removeMMOItem(item);
-    }
-
-    public void setBulletPosition(int mmoItemId, float x, float y, float direction, float speed) {
-//        BaseMMOItem item = room.getMMOItemById(mmoItemId);
-//
-//        List<RoomVariable> vars = buildBulletRoomVars(x, y, direction, speed);
-//        gameApi.setMMOItemVariables(item, vars, false);
-    }
-
-    public List<Integer> getBulletList(float x, float y) {
-        List<Integer> shots = new ArrayList<Integer>();
-
-//        // Get MMOItems in proximity
-//        int intX = (int)Math.round(x);
-//        int intY = (int)Math.round(y);
-//        Vec3D pos = new Vec3D(intX, intY, 0);
-//
-//        List<BaseMMOItem> items = room.getProximityItems(pos);
-//
-//        // Get all MMOItems of type "weapon"
-//        for (BaseMMOItem item : items) {
-////            boolean isWeapon = item.getVariable(IV_TYPE).getStringValue().equals(ITYPE_WEAPON);
-////
-////            if (isWeapon)
-//                shots.add(item.getId());
-//        }
-
-        return shots;
-    }
-
-
-
-
-    private List<RoomVariable> buildBulletRoomVars(float x, float y, float direction, float speed)  {
         List<RoomVariable> vars = new ArrayList<RoomVariable>();
-//        vars.add(new RoomVariable(UserProps.POSX, x));
-//        vars.add(new RoomVariable(UserProps.POSY, y));
-//        vars.add(new RoomVariable(UserProps.DIRECTION, direction));
-//        vars.add(new RoomVariable(UserProps.SPEED, speed));
-        return vars;
+
+        SFSArray bulletsArray = new SFSArray();
+        for (Iterator<Map.Entry<Integer, Bullet>> it = bullets.entrySet().iterator(); it.hasNext(); ) {
+            Bullet bullet = it.next().getValue();
+
+            SFSObject bulletData = new SFSObject();
+            bulletData.putInt(UserProps.POSX, bullet.getX());
+            bulletData.putInt(UserProps.POSY, bullet.getY());
+            bulletData.putFloat(UserProps.DIRECTION, bullet.getDirection());
+            bulletData.putFloat(UserProps.SPEED, bullet.getSpeed());
+
+            bulletsArray.addSFSObject(bulletData);
+        }
+        vars.add(new SFSRoomVariable(UserProps.BULLETS, bulletsArray));
+
+        getApi().setRoomVariables(user, room, vars);
     }
 }

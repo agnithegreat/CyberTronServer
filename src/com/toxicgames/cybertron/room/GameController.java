@@ -1,14 +1,15 @@
 package com.toxicgames.cybertron.room;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
 import com.toxicgames.cybertron.core.Bullet;
 import com.toxicgames.cybertron.core.Field;
 import com.toxicgames.cybertron.core.GameItem;
 import com.toxicgames.cybertron.core.Personage;
+import com.toxicgames.cybertron.enums.UserProps;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,6 +60,19 @@ public class GameController extends Thread {
         savePersonagePosition(personage);
     }
 
+    public void shotUser(int ownerId, float direction) {
+        Personage personage = personages.get(ownerId);
+        personage.direction = direction;
+
+        savePersonagePosition(personage);
+
+        ISFSObject settings = new SFSObject();
+        settings.putFloat(UserProps.DIRECTION, direction);
+        settings.putFloat(UserProps.SPEED, 50);
+        settings.putUtfString(UserProps.WEAPON, "weapon");
+        createBullet(ownerId, settings);
+    }
+
     public void createBullet(int ownerId, ISFSObject settings) {
         Personage personage = personages.get(ownerId);
 
@@ -67,10 +81,7 @@ public class GameController extends Thread {
         bullet.y = personage.y + (float) Math.sin(personage.direction) * 10;
 		bullet.lastRenderTime = System.currentTimeMillis();
 
-        int id = extension.addBullet(bullet.getWeapon(), bullet.x, bullet.y, bullet.getDirection(), bullet.getSpeed());
-        bullet.setItemId(id);
-
-		bullets.put(id, bullet);
+		bullets.put(bullet.getItemId(), bullet);
     }
 
     @Override
@@ -79,7 +90,6 @@ public class GameController extends Thread {
             for (Iterator<Map.Entry<Integer, Bullet>> it = bullets.entrySet().iterator(); it.hasNext(); ) {
                 Bullet bullet = it.next().getValue();
                 renderBullet(bullet);
-                saveBulletPosition(bullet);
             }
 
             for (Iterator<Map.Entry<Integer, Personage>> it = personages.entrySet().iterator(); it.hasNext(); ) {
@@ -91,23 +101,20 @@ public class GameController extends Thread {
                     savePersonagePosition(personage);
                 }
 
-                List<Integer> bulletIDs = extension.getBulletList(personage.x, personage.y);
-
                 boolean hit = false;
 
-                for (int i = 0; i < bulletIDs.size(); i++) {
-                    int bulletID = bulletIDs.get(i);
-                    Bullet bullet = bullets.get(bulletID);
+                for (Iterator<Map.Entry<Integer, Bullet>> it2 = bullets.entrySet().iterator(); it2.hasNext(); ) {
+                    Bullet bullet = it2.next().getValue();
 
                     // Check collision
-                    if (getDistance(personage, bullet) <= 10) {
-                        bullets.remove(bulletID);
-
-                        removeBullet(bullet);
+                    if (getDistance(personage, bullet) <= 5) {
+                        bullets.remove(bullet.getItemId());
 
                         hit = true;
                     }
                 }
+
+                saveBulletsData(personage, bullets);
             }
         }
         catch (Exception e) {
@@ -124,8 +131,6 @@ public class GameController extends Thread {
         personage.x = Math.max(0, Math.min(personage.x, field.getWidth()));
         personage.y += personage.deltaY * delta;
         personage.y = Math.max(0, Math.min(personage.y, field.getHeight()));
-
-        extension.trace(delta, personage.x, personage.y);
 
         personage.lastRenderTime = now;
     }
@@ -147,14 +152,9 @@ public class GameController extends Thread {
 		extension.setPersonageState(personage.getOwnerId(), personage.getX(), personage.getY(), personage.direction);
 	}
 
-    private void saveBulletPosition(Bullet bullet) {
-		extension.setBulletPosition(bullet.getOwnerId(), bullet.x, bullet.y, bullet.getDirection(), bullet.getSpeed());
+    private void saveBulletsData(Personage personage, Map<Integer, Bullet> bullets) {
+		extension.setBulletsPositions(personage.getOwnerId(), bullets);
 	}
-
-    private void removeBullet(Bullet bullet) {
-        extension.removeBullet(bullet.getItemId());
-	}
-
 
     private float getDistance(GameItem simItem1, GameItem simItem2) {
         float dist_x = simItem1.x - simItem2.x;

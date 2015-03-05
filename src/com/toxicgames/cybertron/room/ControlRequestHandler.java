@@ -30,7 +30,7 @@ public class ControlRequestHandler extends BaseClientRequestHandler {
         } else if (requestId.equals(ClientRequest.REQ_ROTATE)) {
             game.rotatePersonage(sender.getId(), params.getFloat(UserProps.DIRECTION));
         } else if (requestId.equals(ClientRequest.REQ_SHOT)) {
-            ((GameRoomExtension) this.getParentExtension()).shotUser(sender, params.getInt(UserProps.DIRECTION));
+            game.shotUser(sender.getId(), params.getFloat(UserProps.DIRECTION));
         }
     }
 }

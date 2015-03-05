@@ -7,10 +7,9 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  */
 public class Bullet extends GameItem {
 
-    private int itemId;
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
+    static public int count = 0;
+
+    private int itemId = count++;
     public int getItemId() {
         return itemId;
     }
