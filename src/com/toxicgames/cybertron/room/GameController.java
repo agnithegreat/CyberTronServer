@@ -33,13 +33,13 @@ public class GameController extends Thread {
 
     public void createPersonage(int ownerId, ISFSObject settings) {
         Personage personage = new Personage(ownerId, settings);
-        personage.x = Math.random() * field.getWidth();
-        personage.y = Math.random() * field.getHeight();
+        personage.x = Math.round(Math.random() * field.getWidth());
+        personage.y = Math.round(Math.random() * field.getHeight());
         personage.color = (int) (Math.random() * 0xFFFFFF);
 		personage.lastRenderTime = System.currentTimeMillis();
 		personages.put(ownerId, personage);
 
-		savePersonagePosition(personage, true);
+		sendPersonageData(personage);
     }
 
     public void removePersonage(int ownerId) {
@@ -50,16 +50,21 @@ public class GameController extends Thread {
         Personage personage = personages.get(ownerId);
         personage.deltaX = deltaX;
         personage.deltaY = deltaY;
+    }
 
-        savePersonagePosition(personage, true);
+    public void rotatePersonage(int ownerId, float direction) {
+        Personage personage = personages.get(ownerId);
+        personage.direction = direction;
+
+        savePersonagePosition(personage);
     }
 
     public void createBullet(int ownerId, ISFSObject settings) {
         Personage personage = personages.get(ownerId);
 
         Bullet bullet = new Bullet(ownerId, settings);
-        bullet.x = personage.x + Math.cos(personage.direction) * 1;
-        bullet.y = personage.y + Math.sin(personage.direction) * 1;
+        bullet.x = personage.x + (float) Math.cos(personage.direction) * 10;
+        bullet.y = personage.y + (float) Math.sin(personage.direction) * 10;
 		bullet.lastRenderTime = System.currentTimeMillis();
 
         int id = extension.addBullet(bullet.getWeapon(), bullet.x, bullet.y, bullet.getDirection(), bullet.getSpeed());
@@ -77,10 +82,15 @@ public class GameController extends Thread {
                 saveBulletPosition(bullet);
             }
 
-            for (Personage personage : personages.values()) {
+            for (Iterator<Map.Entry<Integer, Personage>> it = personages.entrySet().iterator(); it.hasNext(); ) {
+                Personage personage = it.next().getValue();
+
                 renderPersonage(personage);
 
-                // Retrieve list of MMOItems in proximity to check the collision
+                if (personage.deltaX != 0 || personage.deltaY != 0) {
+                    savePersonagePosition(personage);
+                }
+
                 List<Integer> bulletIDs = extension.getBulletList(personage.x, personage.y);
 
                 boolean hit = false;
@@ -98,8 +108,6 @@ public class GameController extends Thread {
                         hit = true;
                     }
                 }
-
-                savePersonagePosition(personage, hit);
             }
         }
         catch (Exception e) {
@@ -110,28 +118,33 @@ public class GameController extends Thread {
 
     private void renderPersonage(Personage personage) {
         long now = System.currentTimeMillis();
-        long elapsed = now - personage.lastRenderTime;
+        double delta = (now - personage.lastRenderTime) / 1000.0;
 
-        for (long i = 0; i < elapsed; i++) {
-            personage.x += personage.deltaX * elapsed;
-            personage.y += personage.deltaY * elapsed;
-        }
+        personage.x += personage.deltaX * delta;
+        personage.x = Math.max(0, Math.min(personage.x, field.getWidth()));
+        personage.y += personage.deltaY * delta;
+        personage.y = Math.max(0, Math.min(personage.y, field.getHeight()));
+
+        extension.trace(delta, personage.x, personage.y);
+
         personage.lastRenderTime = now;
     }
 
     private void renderBullet(Bullet bullet) {
         long now = System.currentTimeMillis();
-        long elapsed = now - bullet.lastRenderTime;
+        double delta = (now - bullet.lastRenderTime) / 1000.0;
 
-        for (long i = 0; i < elapsed; i++) {
-            bullet.x += Math.cos(bullet.getDirection()) * bullet.getSpeed() * elapsed;
-            bullet.y += Math.sin(bullet.getDirection()) * bullet.getSpeed() * elapsed;
-        }
+        bullet.x += Math.cos(bullet.getDirection()) * bullet.getSpeed() * delta;
+        bullet.y += Math.sin(bullet.getDirection()) * bullet.getSpeed() * delta;
         bullet.lastRenderTime = now;
     }
 
-    private void savePersonagePosition(Personage personage, boolean doUpdateClients) {
-		extension.setPersonageState(personage.getOwnerId(), personage.x, personage.y, personage.color, doUpdateClients);
+    private void sendPersonageData(Personage personage) {
+		extension.setPersonageData(personage.getOwnerId(), personage.getX(), personage.getY(), personage.color);
+	}
+
+    private void savePersonagePosition(Personage personage) {
+		extension.setPersonageState(personage.getOwnerId(), personage.getX(), personage.getY(), personage.direction);
 	}
 
     private void saveBulletPosition(Bullet bullet) {
@@ -143,10 +156,10 @@ public class GameController extends Thread {
 	}
 
 
-    private double getDistance(GameItem simItem1, GameItem simItem2) {
-        double dist_x = simItem1.x - simItem2.x;
-        double dist_y = simItem1.y - simItem2.y;
+    private float getDistance(GameItem simItem1, GameItem simItem2) {
+        float dist_x = simItem1.x - simItem2.x;
+        float dist_y = simItem1.y - simItem2.y;
 
-        return Math.sqrt(Math.pow(dist_x, 2) + Math.pow(dist_y, 2));
+        return (float) Math.sqrt(Math.pow(dist_x, 2) + Math.pow(dist_y, 2));
     }
 }

@@ -19,11 +19,11 @@ public class Bullet extends GameItem {
         super(ownerId, settings);
     }
 
-    public double getDirection() {
-        return settings.getDouble("direction");
+    public float getDirection() {
+        return settings.getFloat("direction");
     }
-    public double getSpeed() {
-        return settings.getDouble("speed");
+    public float getSpeed() {
+        return settings.getFloat("speed");
     }
     public String getWeapon() { return settings.getUtfString("weapon"); }
 }

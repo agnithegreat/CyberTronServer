@@ -8,8 +8,8 @@ public class GameItem {
 
 	protected ISFSObject settings;
 	
-	public double x;
-	public double y;
+	public float x;
+	public float y;
 	public long lastRenderTime;
 	
 	public GameItem(int ownerId, ISFSObject settings)
@@ -22,6 +22,13 @@ public class GameItem {
 	{
 		return ownerId;
 	}
+
+    public int getX() {
+        return (int) Math.round(x);
+    }
+    public int getY() {
+        return (int) Math.round(y);
+    }
 	
 //	public String getModel()
 //	{

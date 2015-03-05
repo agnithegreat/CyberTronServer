@@ -9,16 +9,16 @@ public class Personage extends GameItem {
 
     public int color = 0;
 
-    public double deltaX = 0;
-    public double deltaY = 0;
+    public int deltaX = 0;
+    public int deltaY = 0;
 
-    public double direction;
+    public float direction;
 
     public Personage(int ownerId, ISFSObject settings) {
         super(ownerId, settings);
     }
 
-    public double getShotSpeed() {
-        return settings.getDouble("shotSpeed");
+    public float getShotSpeed() {
+        return settings.getFloat("shotSpeed");
     }
 }
