@@ -3,7 +3,6 @@ package com.toxicgames.cybertron.core;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
-import com.toxicgames.cybertron.enums.BulletProps;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
@@ -16,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GameController extends Thread {
 
+    private long lastRenderTime;
     private GameRoomExtension extension;
 
     private ISFSObject settings;
@@ -32,6 +32,8 @@ public class GameController extends Thread {
 
     private Map<Integer, Personage> personages;
     private Map<Integer, Bullet> bullets;
+    private Map<Integer, Monster> monsters;
+    private int spawnTimeleft = 1000;
 
     public GameController(GameRoomExtension extension, ISFSObject settings, ISFSObject levels) {
         this.extension = extension;
@@ -40,6 +42,8 @@ public class GameController extends Thread {
         this.field = new Field(settings.getSFSObject("field"));
         this.personages = new ConcurrentHashMap<Integer, Personage>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
+        this.monsters = new ConcurrentHashMap<Integer, Monster>();
+        this.lastRenderTime = System.currentTimeMillis();
     }
 
     public void createPersonage(int ownerId) {
@@ -82,6 +86,16 @@ public class GameController extends Thread {
     public void shotUser(int ownerId, boolean shoot) {
         Personage personage = personages.get(ownerId);
         personage.isShooting = shoot;
+    }
+
+    public void createMonster(ISFSObject settings) {
+
+        Monster monster = new Monster(settings);
+        monster.x = 0;
+        monster.y = 0;
+        monster.lastRenderTime = System.currentTimeMillis();
+
+        monsters.put(monster.getItemId(), monster);
     }
 
     public void createBullet(int ownerId, ISFSObject settings, float direction) {
@@ -128,11 +142,56 @@ public class GameController extends Thread {
 
                 saveBulletsData(personage, bullets);
             }
+
+            double delta = System.currentTimeMillis() - lastRenderTime;
+            lastRenderTime = System.currentTimeMillis();
+
+            for (Iterator<Map.Entry<Integer, Monster>> mon = monsters.entrySet().iterator(); mon.hasNext(); ) {
+                Monster monster = mon.next().getValue();
+
+                moveMonster(monster, delta / 1000);
+
+                if (monster.x < 0 || monster.x > field.getWidth() || monster.y < 0 || monster.y > field.getHeight()) {
+                    monsters.remove(monster.getItemId());
+                }
+            }
+
+            spawnTimeleft -= delta;
+
+            if(spawnTimeleft <= 0) {
+                spawnTimeleft += 2000;
+
+                ISFSObject settings = new SFSObject();
+                settings.putFloat(UserProps.DIRECTION, (float) Math.atan2(10,10));
+                settings.putFloat(UserProps.SPEED, 100);
+
+                createMonster(settings);
+            }
+
+            saveMonstersData();
+
+
+
+//            game.shotUser(sender.getId(), params.getFloat(UserProps.DIRECTION));
+
         }
         catch (Exception e) {
             ExceptionMessageComposer emc = new ExceptionMessageComposer(e);
             extension.trace(emc.toString());
         }
+    }
+
+    private void moveMonster(Monster monster, double delta) {
+        double xdelta = Math.cos(monster.getDirection()) * monster.getSpeed() * delta;
+        double ydelta = Math.sin(monster.getDirection()) * monster.getSpeed() * delta;
+
+
+        extension.trace(delta, monster.getSpeed(), xdelta, ydelta);
+
+
+
+        monster.x += xdelta;
+        monster.y += ydelta;
     }
 
     private void renderPersonage(Personage personage) {
@@ -188,6 +247,12 @@ public class GameController extends Thread {
     private void saveBulletsData(Personage personage, Map<Integer, Bullet> bullets) {
 		extension.setBulletsPositions(personage.getOwnerId(), bullets);
 	}
+
+    private void saveMonstersData() {
+        if(!monsters.isEmpty()) {
+            extension.setMonstersPositions(monsters);
+        }
+    }
 
     private double getDistance(GameItem simItem1, GameItem simItem2) {
         double dist_x = simItem1.x - simItem2.x;

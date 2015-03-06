@@ -12,4 +12,5 @@ public class UserProps {
     public static final String DIRECTION = "direction";
     public static final String SHOOT = "shoot";
     public static final String SPEED = "speed";
+    public static final String ID = "id";
 }

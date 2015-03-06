@@ -6,6 +6,7 @@ import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSArray;
+import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.RoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
@@ -14,6 +15,7 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.smartfoxserver.v2.game.SFSGame;
 import com.toxicgames.cybertron.core.Bullet;
 import com.toxicgames.cybertron.core.GameController;
+import com.toxicgames.cybertron.core.Monster;
 import com.toxicgames.cybertron.enums.ClientRequest;
 import com.toxicgames.cybertron.enums.InternalCmd;
 import com.toxicgames.cybertron.enums.RoomProps;
@@ -117,6 +119,27 @@ public class GameRoomExtension extends SFSExtension {
         }
     }
 
+    public void setMonstersPositions(Map<Integer, Monster> monsters) {
+        List<RoomVariable> vars = new ArrayList<RoomVariable>();
+
+        SFSArray monstersArray = new SFSArray();
+        for (Iterator<Map.Entry<Integer, Monster>> it = monsters.entrySet().iterator(); it.hasNext(); ) {
+            Monster monster = it.next().getValue();
+
+            SFSObject monstersData = new SFSObject();
+            monstersData.putInt(UserProps.ID, monster.getItemId());
+            monstersData.putInt(UserProps.POSX, monster.getX());
+            monstersData.putInt(UserProps.POSY, monster.getY());
+            monstersData.putFloat(UserProps.DIRECTION, monster.getDirection());
+            monstersData.putFloat(UserProps.SPEED, monster.getSpeed());
+
+            monstersArray.addSFSObject(monstersData);
+        }
+        vars.add(new SFSRoomVariable(RoomProps.MONSTERS, monstersArray));
+
+        getApi().setRoomVariables(null, room, vars);
+
+    }
     public void setBulletsPositions(int userId, Map<Integer, Bullet> bullets) {
         User user = room.getUserById(userId);
 
