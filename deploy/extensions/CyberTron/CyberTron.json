@@ -16,7 +16,7 @@
             "name": "gun",
             "speed": 500,
             "damage": 10,
-            "cooldown": 0.3
+            "cooldown": 0.1
         }
     }
 }

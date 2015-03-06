@@ -85,7 +85,7 @@ public class GameRoomExtension extends SFSExtension {
 
 
 
-    public void setGameData(int userId, SFSObject data) {
+    public void setGameData(int userId, ISFSObject data) {
         User user = room.getUserById(userId);
         List<RoomVariable> vars = new ArrayList<RoomVariable>();
         vars.add(new SFSRoomVariable(RoomProps.DATA, data));

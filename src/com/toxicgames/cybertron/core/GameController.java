@@ -42,6 +42,8 @@ public class GameController extends Thread {
 		personages.put(ownerId, personage);
 
 		sendPersonageData(personage);
+
+        extension.setGameData(ownerId, settings);
     }
 
     public void updatePersonages() {
