@@ -1,6 +1,8 @@
 package com.toxicgames.cybertron.core;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSObject;
+import com.toxicgames.cybertron.enums.BulletProps;
 
 /**
  * Created by kirillvirich on 04.03.15.
@@ -14,15 +16,31 @@ public class Bullet extends GameItem {
         return itemId;
     }
 
-    public Bullet(int ownerId, ISFSObject settings) {
+    private float direction;
+
+    public Bullet(int ownerId, ISFSObject settings, float direction) {
         super(ownerId, settings);
+
+        this.direction = direction;
     }
 
     public float getDirection() {
-        return settings.getFloat("direction");
+        return direction;
     }
-    public float getSpeed() {
-        return settings.getFloat("speed");
+    public int getSpeed() {
+        return settings.getInt("speed");
     }
-    public String getWeapon() { return settings.getUtfString("weapon"); }
+    public String getWeapon() { return settings.getUtfString("name"); }
+
+    public SFSObject getData() {
+        SFSObject data = new SFSObject();
+        data.putInt(BulletProps.ID, getItemId());
+        data.putInt(BulletProps.USER, getOwnerId());
+        data.putInt(BulletProps.POSX, getX());
+        data.putInt(BulletProps.POSY, getY());
+        data.putFloat(BulletProps.DIRECTION, getDirection());
+        data.putInt(BulletProps.SPEED, getSpeed());
+        data.putUtfString(BulletProps.WEAPON, getWeapon());
+        return data;
+    }
 }

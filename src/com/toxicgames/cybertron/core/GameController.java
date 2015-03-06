@@ -3,6 +3,7 @@ package com.toxicgames.cybertron.core;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
+import com.toxicgames.cybertron.enums.BulletProps;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
@@ -17,6 +18,8 @@ public class GameController extends Thread {
 
     private GameRoomExtension extension;
 
+    private ISFSObject settings;
+
     private Field field;
 
     private Map<Integer, Personage> personages;
@@ -24,13 +27,14 @@ public class GameController extends Thread {
 
     public GameController(GameRoomExtension extension, ISFSObject settings) {
         this.extension = extension;
-        this.field = new Field(settings);
+        this.settings = settings;
+        this.field = new Field(settings.getSFSObject("field"));
         this.personages = new ConcurrentHashMap<Integer, Personage>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
     }
 
-    public void createPersonage(int ownerId, ISFSObject settings) {
-        Personage personage = new Personage(ownerId, settings);
+    public void createPersonage(int ownerId) {
+        Personage personage = new Personage(ownerId, settings.getSFSObject("player"));
         personage.x = Math.round(Math.random() * field.getWidth());
         personage.y = Math.round(Math.random() * field.getHeight());
         personage.color = (int) (Math.random() * 0xFFFFFF);
@@ -53,8 +57,8 @@ public class GameController extends Thread {
 
     public void movePersonage(int ownerId, int deltaX, int deltaY) {
         Personage personage = personages.get(ownerId);
-        personage.deltaX = deltaX;
-        personage.deltaY = deltaY;
+        personage.deltaX = deltaX == 0 ? 0 : (deltaX > 0 ? 1 : -1);
+        personage.deltaY = deltaY == 0 ? 0 : (deltaY > 0 ? 1 : -1);
     }
 
     public void rotatePersonage(int ownerId, float direction) {
@@ -65,24 +69,17 @@ public class GameController extends Thread {
     }
 
     public void shotUser(int ownerId, float direction) {
-        Personage personage = personages.get(ownerId);
-        personage.direction = direction;
+        rotatePersonage(ownerId, direction);
 
-        savePersonagePosition(personage);
-
-        ISFSObject settings = new SFSObject();
-        settings.putFloat(UserProps.DIRECTION, direction);
-        settings.putFloat(UserProps.SPEED, 200);
-        settings.putUtfString(UserProps.WEAPON, "weapon");
-        createBullet(ownerId, settings);
+        createBullet(ownerId, settings.getSFSObject("weapons").getSFSObject("gun"), direction);
     }
 
-    public void createBullet(int ownerId, ISFSObject settings) {
+    public void createBullet(int ownerId, ISFSObject settings, float direction) {
         Personage personage = personages.get(ownerId);
 
-        Bullet bullet = new Bullet(ownerId, settings);
-        bullet.x = personage.x + (float) Math.cos(personage.direction) * 10;
-        bullet.y = personage.y + (float) Math.sin(personage.direction) * 10;
+        Bullet bullet = new Bullet(ownerId, settings, direction);
+        bullet.x = personage.x + (float) Math.cos(personage.direction) * personage.getShotRadius();
+        bullet.y = personage.y + (float) Math.sin(personage.direction) * personage.getShotRadius();
 		bullet.lastRenderTime = System.currentTimeMillis();
 
 		bullets.put(bullet.getItemId(), bullet);
@@ -112,7 +109,7 @@ public class GameController extends Thread {
 
                     if (bullet.x < 0 || bullet.x > field.getWidth() || bullet.y < 0 || bullet.y > field.getHeight()) {
                         bullets.remove(bullet.getItemId());
-                    } else if (getDistance(personage, bullet) <= 5) {
+                    } else if (getDistance(personage, bullet) <= personage.getHitRadius()) {
                         bullets.remove(bullet.getItemId());
 
                         hit = true;
@@ -132,9 +129,12 @@ public class GameController extends Thread {
         long now = System.currentTimeMillis();
         double delta = (now - personage.lastRenderTime) / 1000.0;
 
-        personage.x += personage.deltaX * delta;
+        int mod = Math.abs(personage.deltaX) + Math.abs(personage.deltaY);
+        double speed = mod != 0 ? personage.getSpeed() / Math.sqrt(mod) : personage.getSpeed();
+
+        personage.x += personage.deltaX * speed * delta;
         personage.x = Math.max(0, Math.min(personage.x, field.getWidth()));
-        personage.y += personage.deltaY * delta;
+        personage.y += personage.deltaY * speed * delta;
         personage.y = Math.max(0, Math.min(personage.y, field.getHeight()));
 
         personage.lastRenderTime = now;
@@ -161,10 +161,10 @@ public class GameController extends Thread {
 		extension.setBulletsPositions(personage.getOwnerId(), bullets);
 	}
 
-    private float getDistance(GameItem simItem1, GameItem simItem2) {
-        float dist_x = simItem1.x - simItem2.x;
-        float dist_y = simItem1.y - simItem2.y;
+    private double getDistance(GameItem simItem1, GameItem simItem2) {
+        double dist_x = simItem1.x - simItem2.x;
+        double dist_y = simItem1.y - simItem2.y;
 
-        return (float) Math.sqrt(Math.pow(dist_x, 2) + Math.pow(dist_y, 2));
+        return Math.sqrt(Math.pow(dist_x, 2) + Math.pow(dist_y, 2));
     }
 }

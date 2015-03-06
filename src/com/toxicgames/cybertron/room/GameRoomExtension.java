@@ -16,6 +16,7 @@ import com.smartfoxserver.v2.game.SFSGame;
 import com.toxicgames.cybertron.core.Bullet;
 import com.toxicgames.cybertron.core.GameController;
 import com.toxicgames.cybertron.enums.ClientRequest;
+import com.toxicgames.cybertron.enums.RoomProps;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.handlers.ControlRequestHandler;
 import com.toxicgames.cybertron.handlers.UserJoinedGameEventHandler;
@@ -55,7 +56,7 @@ public class GameRoomExtension extends SFSExtension {
 
         addRequestHandler(ClientRequest.REQ_CONTROL, ControlRequestHandler.class);
 
-        ISFSObject settings = (ISFSObject) this.getParentZone().getExtension().handleInternalMessage("getFieldCfg", null);
+        ISFSObject settings = (ISFSObject) this.getParentZone().getExtension().handleInternalMessage("", null);
         game = new GameController(this, settings);
 
         // Schedule task: 30ms is nearly 30 fps used by the Flash client;
@@ -73,10 +74,7 @@ public class GameRoomExtension extends SFSExtension {
     }
 
     public void addPersonage(User user) {
-        ISFSObject settings = new SFSObject();
-
-        game.createPersonage(user.getId(), settings);
-
+        game.createPersonage(user.getId());
         game.updatePersonages();
     }
 
@@ -86,6 +84,13 @@ public class GameRoomExtension extends SFSExtension {
     }
 
 
+
+    public void setGameData(int userId, SFSObject data) {
+        User user = room.getUserById(userId);
+        List<RoomVariable> vars = new ArrayList<RoomVariable>();
+        vars.add(new SFSRoomVariable(RoomProps.DATA, data));
+        getApi().setRoomVariables(user, room, vars);
+    }
 
     public void setPersonageData(int userId, int x, int y, int color) {
         User user = room.getUserById(userId);
@@ -119,18 +124,9 @@ public class GameRoomExtension extends SFSExtension {
         SFSArray bulletsArray = new SFSArray();
         for (Iterator<Map.Entry<Integer, Bullet>> it = bullets.entrySet().iterator(); it.hasNext(); ) {
             Bullet bullet = it.next().getValue();
-
-            SFSObject bulletData = new SFSObject();
-            bulletData.putInt(UserProps.ID, bullet.getItemId());
-            bulletData.putInt(UserProps.USER, bullet.getOwnerId());
-            bulletData.putInt(UserProps.POSX, bullet.getX());
-            bulletData.putInt(UserProps.POSY, bullet.getY());
-            bulletData.putFloat(UserProps.DIRECTION, bullet.getDirection());
-            bulletData.putFloat(UserProps.SPEED, bullet.getSpeed());
-
-            bulletsArray.addSFSObject(bulletData);
+            bulletsArray.addSFSObject(bullet.getData());
         }
-        vars.add(new SFSRoomVariable(UserProps.BULLETS, bulletsArray));
+        vars.add(new SFSRoomVariable(RoomProps.BULLETS, bulletsArray));
 
         getApi().setRoomVariables(user, room, vars);
     }

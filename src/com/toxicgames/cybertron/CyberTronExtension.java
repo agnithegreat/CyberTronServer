@@ -15,8 +15,6 @@ import java.io.IOException;
  */
 public class CyberTronExtension extends SFSExtension {
 
-    private static final String CFG_FIELD_KEY = "field";
-
     private ISFSObject configuration;
 
     @Override
@@ -33,24 +31,12 @@ public class CyberTronExtension extends SFSExtension {
 
     @Override
     public Object handleInternalMessage(String cmdName, Object params) {
-        if (cmdName.equals("getFieldCfg")) {
-            return getFieldCfg();
-        }
-        return null;
-    }
-
-    public ISFSObject getFieldCfg() {
-        return configuration.getSFSObject(CFG_FIELD_KEY);
+        return configuration;
     }
 
     private void setupGame() throws IOException  {
         String cfgData = FileUtils.readFileToString(new File(this.getCurrentFolder() + "CyberTron.json"));
 
-        ISFSObject tempCfg = SFSObject.newFromJsonData(cfgData);
-
-        ISFSObject field = tempCfg.getSFSObject(CFG_FIELD_KEY);
-
-        configuration = new SFSObject();
-        configuration.putSFSObject(CFG_FIELD_KEY, field);
+        configuration = SFSObject.newFromJsonData(cfgData);
     }
 }

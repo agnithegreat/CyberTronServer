@@ -8,12 +8,11 @@ public class GameItem {
 
 	protected ISFSObject settings;
 	
-	public float x;
-	public float y;
+	public double x;
+	public double y;
 	public long lastRenderTime;
 	
-	public GameItem(int ownerId, ISFSObject settings)
-	{
+	public GameItem(int ownerId, ISFSObject settings) {
 		this.ownerId = ownerId;
 		this.settings = settings;
 	}
@@ -29,9 +28,4 @@ public class GameItem {
     public int getY() {
         return (int) Math.round(y);
     }
-	
-//	public String getModel()
-//	{
-//		return settings.getUtfString("model");
-//	}
 }

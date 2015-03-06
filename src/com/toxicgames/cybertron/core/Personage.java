@@ -18,7 +18,14 @@ public class Personage extends GameItem {
         super(ownerId, settings);
     }
 
-    public float getShotSpeed() {
-        return settings.getFloat("shotSpeed");
+    public int getSpeed() {
+        return settings.getInt("speed");
+    }
+
+    public int getHitRadius() {
+        return settings.getInt("hitRadius");
+    }
+    public int getShotRadius() {
+        return settings.getInt("shotRadius");
     }
 }
