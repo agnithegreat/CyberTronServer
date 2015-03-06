@@ -33,7 +33,7 @@ public class GameController extends Thread {
     private Map<Integer, Personage> personages;
     private Map<Integer, Bullet> bullets;
     private Map<Integer, Monster> monsters;
-    private int spawnTimeleft = 1000;
+    private float spawnTimeleft = 1;
 
     public GameController(GameRoomExtension extension, ISFSObject settings, ISFSObject levels) {
         this.extension = extension;
@@ -89,12 +89,10 @@ public class GameController extends Thread {
     }
 
     public void createMonster(ISFSObject settings) {
-
         Monster monster = new Monster(settings);
         monster.x = 0;
         monster.y = 0;
         monster.lastRenderTime = System.currentTimeMillis();
-
         monsters.put(monster.getItemId(), monster);
     }
 
@@ -143,23 +141,21 @@ public class GameController extends Thread {
                 saveBulletsData(personage, bullets);
             }
 
-            double delta = System.currentTimeMillis() - lastRenderTime;
-            lastRenderTime = System.currentTimeMillis();
-
             for (Iterator<Map.Entry<Integer, Monster>> mon = monsters.entrySet().iterator(); mon.hasNext(); ) {
                 Monster monster = mon.next().getValue();
-
-                moveMonster(monster, delta / 1000);
+                renderMonster(monster);
 
                 if (monster.x < 0 || monster.x > field.getWidth() || monster.y < 0 || monster.y > field.getHeight()) {
                     monsters.remove(monster.getItemId());
                 }
             }
 
+            long now = System.currentTimeMillis();
+            double delta = (now - lastRenderTime) / 1000.0;
             spawnTimeleft -= delta;
 
-            if(spawnTimeleft <= 0) {
-                spawnTimeleft += 2000;
+            if (spawnTimeleft <= 0) {
+                spawnTimeleft += 2;
 
                 ISFSObject settings = new SFSObject();
                 settings.putFloat(UserProps.DIRECTION, (float) Math.atan2(10,10));
@@ -170,28 +166,12 @@ public class GameController extends Thread {
 
             saveMonstersData();
 
-
-
-//            game.shotUser(sender.getId(), params.getFloat(UserProps.DIRECTION));
-
+            lastRenderTime = now;
         }
         catch (Exception e) {
             ExceptionMessageComposer emc = new ExceptionMessageComposer(e);
             extension.trace(emc.toString());
         }
-    }
-
-    private void moveMonster(Monster monster, double delta) {
-        double xdelta = Math.cos(monster.getDirection()) * monster.getSpeed() * delta;
-        double ydelta = Math.sin(monster.getDirection()) * monster.getSpeed() * delta;
-
-
-        extension.trace(delta, monster.getSpeed(), xdelta, ydelta);
-
-
-
-        monster.x += xdelta;
-        monster.y += ydelta;
     }
 
     private void renderPersonage(Personage personage) {
@@ -225,6 +205,19 @@ public class GameController extends Thread {
         }
 
         personage.lastRenderTime = now;
+    }
+
+    private void renderMonster(Monster monster) {
+        long now = System.currentTimeMillis();
+        double delta = (now - monster.lastRenderTime) / 1000.0;
+
+        double xdelta = Math.cos(monster.getDirection()) * monster.getSpeed() * delta;
+        double ydelta = Math.sin(monster.getDirection()) * monster.getSpeed() * delta;
+
+        monster.x += xdelta;
+        monster.y += ydelta;
+
+        monster.lastRenderTime = now;
     }
 
     private void renderBullet(Bullet bullet) {

@@ -14,6 +14,8 @@ public class Monster extends GameItem {
         return itemId;
     }
 
+    public long lastRenderTime;
+
     public Monster(ISFSObject settings) {
         super(0, settings);
     }
