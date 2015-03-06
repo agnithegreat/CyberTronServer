@@ -6,7 +6,6 @@ import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSArray;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.RoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
@@ -16,6 +15,7 @@ import com.smartfoxserver.v2.game.SFSGame;
 import com.toxicgames.cybertron.core.Bullet;
 import com.toxicgames.cybertron.core.GameController;
 import com.toxicgames.cybertron.enums.ClientRequest;
+import com.toxicgames.cybertron.enums.InternalCmd;
 import com.toxicgames.cybertron.enums.RoomProps;
 import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.handlers.ControlRequestHandler;
@@ -56,8 +56,9 @@ public class GameRoomExtension extends SFSExtension {
 
         addRequestHandler(ClientRequest.REQ_CONTROL, ControlRequestHandler.class);
 
-        ISFSObject settings = (ISFSObject) this.getParentZone().getExtension().handleInternalMessage("", null);
-        game = new GameController(this, settings);
+        ISFSObject settings = (ISFSObject) this.getParentZone().getExtension().handleInternalMessage(InternalCmd.GET_CONFIGURATION, null);
+        ISFSObject levels = (ISFSObject) this.getParentZone().getExtension().handleInternalMessage(InternalCmd.GET_LEVELS, null);
+        game = new GameController(this, settings, levels);
 
         // Schedule task: 30ms is nearly 30 fps used by the Flash client;
         gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 30, TimeUnit.MILLISECONDS);

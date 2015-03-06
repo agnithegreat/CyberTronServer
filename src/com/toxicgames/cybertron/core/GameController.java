@@ -23,14 +23,20 @@ public class GameController extends Thread {
         return settings.getSFSObject("weapons").getSFSObject(name);
     }
 
+    private ISFSObject levels;
+    public ISFSObject getLevel(String id) {
+        return settings.getSFSObject(id);
+    }
+
     private Field field;
 
     private Map<Integer, Personage> personages;
     private Map<Integer, Bullet> bullets;
 
-    public GameController(GameRoomExtension extension, ISFSObject settings) {
+    public GameController(GameRoomExtension extension, ISFSObject settings, ISFSObject levels) {
         this.extension = extension;
         this.settings = settings;
+        this.levels = levels;
         this.field = new Field(settings.getSFSObject("field"));
         this.personages = new ConcurrentHashMap<Integer, Personage>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
