@@ -14,6 +14,9 @@ public class Personage extends GameItem {
 
     public float direction;
 
+    public boolean isShooting;
+    public float shotCooldown;
+
     public Personage(int ownerId, ISFSObject settings) {
         super(ownerId, settings);
     }
@@ -27,5 +30,9 @@ public class Personage extends GameItem {
     }
     public int getShotRadius() {
         return settings.getInt("shotRadius");
+    }
+
+    public String getWeapon() {
+        return settings.getUtfString("weapon");
     }
 }

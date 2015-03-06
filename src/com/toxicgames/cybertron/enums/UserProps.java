@@ -10,5 +10,6 @@ public class UserProps {
     public static final String DELTAX = "deltaX";
     public static final String DELTAY = "deltaY";
     public static final String DIRECTION = "direction";
+    public static final String SHOOT = "shoot";
     public static final String SPEED = "speed";
 }

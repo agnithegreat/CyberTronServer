@@ -19,6 +19,9 @@ public class GameController extends Thread {
     private GameRoomExtension extension;
 
     private ISFSObject settings;
+    public ISFSObject getWeapon(String name) {
+        return settings.getSFSObject("weapons").getSFSObject(name);
+    }
 
     private Field field;
 
@@ -70,10 +73,9 @@ public class GameController extends Thread {
         savePersonagePosition(personage);
     }
 
-    public void shotUser(int ownerId, float direction) {
-        rotatePersonage(ownerId, direction);
-
-        createBullet(ownerId, settings.getSFSObject("weapons").getSFSObject("gun"), direction);
+    public void shotUser(int ownerId, boolean shoot) {
+        Personage personage = personages.get(ownerId);
+        personage.isShooting = shoot;
     }
 
     public void createBullet(int ownerId, ISFSObject settings, float direction) {
@@ -138,6 +140,13 @@ public class GameController extends Thread {
         personage.x = Math.max(0, Math.min(personage.x, field.getWidth()));
         personage.y += personage.deltaY * speed * delta;
         personage.y = Math.max(0, Math.min(personage.y, field.getHeight()));
+
+        personage.shotCooldown -= delta;
+        if (personage.isShooting && personage.shotCooldown <= 0) {
+            ISFSObject weapon = getWeapon(personage.getWeapon());
+            personage.shotCooldown = weapon.getFloat("cooldown");
+            createBullet(personage.getOwnerId(), weapon, personage.direction);
+        }
 
         personage.lastRenderTime = now;
     }

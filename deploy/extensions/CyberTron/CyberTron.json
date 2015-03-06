@@ -8,7 +8,8 @@
         "hp": 100,
         "speed": 100,
         "hitRadius": 10,
-        "shotRadius": 12
+        "shotRadius": 12,
+        "weapon": "gun"
     },
 
     "weapons":{
