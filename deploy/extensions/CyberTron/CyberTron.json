@@ -17,7 +17,9 @@
             "name": "gun",
             "speed": 500,
             "damage": 10,
-            "cooldown": 0.1
+            "ammo": 30,
+            "cooldown": 0.1,
+            "reload": 1.0
         }
     }
 }

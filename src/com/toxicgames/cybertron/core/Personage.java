@@ -14,6 +14,7 @@ public class Personage extends GameItem {
 
     public float direction;
 
+    public int ammo;
     public boolean isShooting;
     public float shotCooldown;
 
