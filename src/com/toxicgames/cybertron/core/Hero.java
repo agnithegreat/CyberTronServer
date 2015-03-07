@@ -7,6 +7,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  */
 public class Hero extends GameItem {
 
+    public int requestCounter = 0;
+
     public int color = 0;
 
     public int deltaX = 0;

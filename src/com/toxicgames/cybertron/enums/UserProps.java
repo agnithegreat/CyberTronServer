@@ -4,6 +4,8 @@ package com.toxicgames.cybertron.enums;
  * Created by mor on 02.03.2015.
  */
 public class UserProps {
+    public static final String REQ_ID = "req_id";
+
     public static final String POSX = "posX";
     public static final String POSY = "posY";
     public static final String COLOR = "color";

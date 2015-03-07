@@ -95,11 +95,12 @@ public class GameRoomExtension extends SFSExtension {
         getApi().setRoomVariables(user, room, vars);
     }
 
-    public void setHeroData(int userId, int x, int y, int color) {
+    public void setHeroData(int userId, int x, int y, int color, int reqId) {
         User user = room.getUserById(userId);
 
         if (user != null) {
             List<UserVariable> vars = new ArrayList<UserVariable>();
+            vars.add(new SFSUserVariable(UserProps.REQ_ID, reqId));
             vars.add(new SFSUserVariable(UserProps.POSX, x));
             vars.add(new SFSUserVariable(UserProps.POSY, y));
             vars.add(new SFSUserVariable(UserProps.COLOR, color));
@@ -107,11 +108,12 @@ public class GameRoomExtension extends SFSExtension {
         }
     }
 
-    public void setHeroState(int userId, int x, int y, float direction) {
+    public void setHeroState(int userId, int x, int y, float direction, int reqId) {
         User user = room.getUserById(userId);
 
         if (user != null) {
             List<UserVariable> vars = new ArrayList<UserVariable>();
+            vars.add(new SFSUserVariable(UserProps.REQ_ID, reqId));
             vars.add(new SFSUserVariable(UserProps.POSX, x));
             vars.add(new SFSUserVariable(UserProps.POSY, y));
             vars.add(new SFSUserVariable(UserProps.DIRECTION, direction));

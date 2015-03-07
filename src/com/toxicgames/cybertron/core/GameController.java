@@ -72,21 +72,24 @@ public class GameController extends Thread {
 		heroes.remove(ownerId);
 	}
 
-    public void moveHero(int ownerId, int deltaX, int deltaY) {
+    public void moveHero(int ownerId, int deltaX, int deltaY, int reqId) {
         Hero hero = heroes.get(ownerId);
+        hero.requestCounter = reqId;
         hero.deltaX = deltaX == 0 ? 0 : (deltaX > 0 ? 1 : -1);
         hero.deltaY = deltaY == 0 ? 0 : (deltaY > 0 ? 1 : -1);
     }
 
-    public void rotateHero(int ownerId, float direction) {
+    public void rotateHero(int ownerId, float direction, int reqId) {
         Hero hero = heroes.get(ownerId);
+        hero.requestCounter = reqId;
         hero.direction = direction;
 
         saveHeroPosition(hero);
     }
 
-    public void shotUser(int ownerId, boolean shoot) {
+    public void shotUser(int ownerId, boolean shoot, int reqId) {
         Hero hero = heroes.get(ownerId);
+        hero.requestCounter = reqId;
         hero.isShooting = shoot;
     }
 
@@ -118,6 +121,7 @@ public class GameController extends Thread {
 
             for (Iterator<Map.Entry<Integer, Hero>> it = heroes.entrySet().iterator(); it.hasNext(); ) {
                 Hero hero = it.next().getValue();
+                hero.requestCounter++;
                 renderHero(hero);
 
                 if (hero.deltaX != 0 || hero.deltaY != 0) {
@@ -239,11 +243,11 @@ public class GameController extends Thread {
     }
 
     private void sendHeroData(Hero hero) {
-		extension.setHeroData(hero.getOwnerId(), hero.getX(), hero.getY(), hero.color);
+		extension.setHeroData(hero.getOwnerId(), hero.getX(), hero.getY(), hero.color, hero.requestCounter);
 	}
 
     private void saveHeroPosition(Hero hero) {
-		extension.setHeroState(hero.getOwnerId(), hero.getX(), hero.getY(), hero.direction);
+		extension.setHeroState(hero.getOwnerId(), hero.getX(), hero.getY(), hero.direction, hero.requestCounter);
 	}
 
     private void saveBulletsData() {
