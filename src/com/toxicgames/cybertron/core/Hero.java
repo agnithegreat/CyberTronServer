@@ -18,6 +18,8 @@ public class Hero extends GameItem {
     public boolean isShooting;
     public float shotCooldown;
 
+    public String weapon;
+
     public Hero(int ownerId, ISFSObject settings) {
         super(ownerId, settings);
     }
@@ -31,9 +33,5 @@ public class Hero extends GameItem {
     }
     public int getShotRadius() {
         return settings.getInt("shotRadius");
-    }
-
-    public String getWeapon() {
-        return settings.getUtfString("weapon");
     }
 }

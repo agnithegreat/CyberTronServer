@@ -16,15 +16,15 @@ public class Bullet extends GameItem {
         return itemId;
     }
 
-    private float direction;
+    private double direction;
 
-    public Bullet(int ownerId, ISFSObject settings, float direction) {
+    public Bullet(int ownerId, ISFSObject settings, double direction) {
         super(ownerId, settings);
 
         this.direction = direction;
     }
 
-    public float getDirection() {
+    public double getDirection() {
         return direction;
     }
     public int getSpeed() {
@@ -41,7 +41,7 @@ public class Bullet extends GameItem {
         data.putInt(BulletProps.USER, getOwnerId());
         data.putInt(BulletProps.POSX, getX());
         data.putInt(BulletProps.POSY, getY());
-        data.putFloat(BulletProps.DIRECTION, getDirection());
+        data.putDouble(BulletProps.DIRECTION, getDirection());
 //        data.putInt(BulletProps.SPEED, getSpeed());
         data.putUtfString(BulletProps.WEAPON, getWeapon());
         return data;

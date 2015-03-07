@@ -1,9 +1,7 @@
 package com.toxicgames.cybertron.core;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
-import com.toxicgames.cybertron.enums.UserProps;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
 import java.util.Iterator;
@@ -54,6 +52,7 @@ public class GameController extends Thread {
         hero.x = Math.round(Math.random() * field.getWidth());
         hero.y = Math.round(Math.random() * field.getHeight());
         hero.color = (int) (Math.random() * 0xFFFFFF);
+        hero.weapon = Math.random() < 0.5 ? "m4" : "shotgun";
 		hero.lastRenderTime = System.currentTimeMillis();
 		heroes.put(ownerId, hero);
 
@@ -100,7 +99,7 @@ public class GameController extends Thread {
         monsters.put(monster.getItemId(), monster);
     }
 
-    public void createBullet(int ownerId, ISFSObject settings, float direction) {
+    public void createBullet(int ownerId, ISFSObject settings, double direction) {
         Hero hero = heroes.get(ownerId);
 
         Bullet bullet = new Bullet(ownerId, settings, direction);
@@ -194,7 +193,7 @@ public class GameController extends Thread {
 
         hero.shotCooldown -= delta;
         if (hero.isShooting && hero.shotCooldown <= 0) {
-            ISFSObject weapon = getWeapon(hero.getWeapon());
+            ISFSObject weapon = getWeapon(hero.weapon);
             if (hero.ammo <= 0) {
                 hero.ammo = weapon.getInt("ammo");
             }
@@ -206,7 +205,12 @@ public class GameController extends Thread {
                     hero.shotCooldown = weapon.getFloat("reload");
                 }
 
-                createBullet(hero.getOwnerId(), weapon, hero.direction);
+                int amount = weapon.getInt("shot_amount");
+                double angle = weapon.getDouble("spread") / amount;
+                for (int i = 0; i < amount; i++) {
+                    double direction = hero.direction + (i - amount/2) * angle;
+                    createBullet(hero.getOwnerId(), weapon, direction);
+                }
             }
         }
 
