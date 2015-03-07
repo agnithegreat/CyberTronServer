@@ -4,12 +4,20 @@
 		"height": 600
 	},
 
-    "player": {
+    "hero": {
         "hp": 100,
         "speed": 100,
         "hitRadius": 10,
         "shotRadius": 12,
         "weapon": "gun"
+    },
+
+    "enemies": {
+        "monster": {
+            "hp": 100,
+            "speed": 100,
+            "hitRadius": 10
+        }
     },
 
     "weapons":{

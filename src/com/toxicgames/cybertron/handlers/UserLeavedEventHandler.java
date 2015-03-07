@@ -23,6 +23,6 @@ public class UserLeavedEventHandler extends BaseServerEventHandler
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 		User user = (User) event.getParameter(SFSEventParam.USER);
-		((GameRoomExtension) this.getParentExtension()).removePersonage(user.getId());
+		((GameRoomExtension) this.getParentExtension()).removeHero(user.getId());
 	}
 }

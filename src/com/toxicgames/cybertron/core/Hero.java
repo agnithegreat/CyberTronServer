@@ -5,7 +5,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 /**
  * Created by kirillvirich on 04.03.15.
  */
-public class Personage extends GameItem {
+public class Hero extends GameItem {
 
     public int color = 0;
 
@@ -18,7 +18,7 @@ public class Personage extends GameItem {
     public boolean isShooting;
     public float shotCooldown;
 
-    public Personage(int ownerId, ISFSObject settings) {
+    public Hero(int ownerId, ISFSObject settings) {
         super(ownerId, settings);
     }
 

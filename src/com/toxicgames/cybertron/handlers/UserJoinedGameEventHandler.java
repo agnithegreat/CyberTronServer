@@ -26,6 +26,6 @@ public class UserJoinedGameEventHandler extends BaseServerEventHandler
 		User user = (User) event.getParameter(SFSEventParam.USER);
 
 		// Add user starship to game
-		((GameRoomExtension) this.getParentExtension()).addPersonage(user);
+		((GameRoomExtension) this.getParentExtension()).addHero(user);
 	}
 }

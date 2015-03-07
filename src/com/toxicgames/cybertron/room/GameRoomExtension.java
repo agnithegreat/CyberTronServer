@@ -76,14 +76,14 @@ public class GameRoomExtension extends SFSExtension {
         return game;
     }
 
-    public void addPersonage(User user) {
-        game.createPersonage(user.getId());
-        game.updatePersonages();
+    public void addHero(User user) {
+        game.createHero(user.getId());
+        game.updateHeroes();
     }
 
-    public void removePersonage(int userId)
+    public void removeHero(int userId)
     {
-        game.removePersonage(userId);
+        game.removeHero(userId);
     }
 
 
@@ -95,7 +95,7 @@ public class GameRoomExtension extends SFSExtension {
         getApi().setRoomVariables(user, room, vars);
     }
 
-    public void setPersonageData(int userId, int x, int y, int color) {
+    public void setHeroData(int userId, int x, int y, int color) {
         User user = room.getUserById(userId);
 
         if (user != null) {
@@ -107,7 +107,7 @@ public class GameRoomExtension extends SFSExtension {
         }
     }
 
-    public void setPersonageState(int userId, int x, int y, float direction) {
+    public void setHeroState(int userId, int x, int y, float direction) {
         User user = room.getUserById(userId);
 
         if (user != null) {
@@ -125,24 +125,14 @@ public class GameRoomExtension extends SFSExtension {
         SFSArray monstersArray = new SFSArray();
         for (Iterator<Map.Entry<Integer, Monster>> it = monsters.entrySet().iterator(); it.hasNext(); ) {
             Monster monster = it.next().getValue();
-
-            SFSObject monstersData = new SFSObject();
-            monstersData.putInt(UserProps.ID, monster.getItemId());
-            monstersData.putInt(UserProps.POSX, monster.getX());
-            monstersData.putInt(UserProps.POSY, monster.getY());
-            monstersData.putFloat(UserProps.DIRECTION, monster.getDirection());
-            monstersData.putFloat(UserProps.SPEED, monster.getSpeed());
-
-            monstersArray.addSFSObject(monstersData);
+            monstersArray.addSFSObject(monster.getData());
         }
         vars.add(new SFSRoomVariable(RoomProps.MONSTERS, monstersArray));
 
         getApi().setRoomVariables(null, room, vars);
 
     }
-    public void setBulletsPositions(int userId, Map<Integer, Bullet> bullets) {
-        User user = room.getUserById(userId);
-
+    public void setBulletsPositions(Map<Integer, Bullet> bullets) {
         List<RoomVariable> vars = new ArrayList<RoomVariable>();
 
         SFSArray bulletsArray = new SFSArray();
@@ -152,6 +142,6 @@ public class GameRoomExtension extends SFSExtension {
         }
         vars.add(new SFSRoomVariable(RoomProps.BULLETS, bulletsArray));
 
-        getApi().setRoomVariables(user, room, vars);
+        getApi().setRoomVariables(null, room, vars);
     }
 }

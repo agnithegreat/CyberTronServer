@@ -30,6 +30,9 @@ public class Bullet extends GameItem {
     public int getSpeed() {
         return settings.getInt("speed");
     }
+    public int getDamage() {
+        return settings.getInt("damage");
+    }
     public String getWeapon() { return settings.getUtfString("name"); }
 
     public SFSObject getData() {
@@ -39,7 +42,7 @@ public class Bullet extends GameItem {
         data.putInt(BulletProps.POSX, getX());
         data.putInt(BulletProps.POSY, getY());
         data.putFloat(BulletProps.DIRECTION, getDirection());
-        data.putInt(BulletProps.SPEED, getSpeed());
+//        data.putInt(BulletProps.SPEED, getSpeed());
         data.putUtfString(BulletProps.WEAPON, getWeapon());
         return data;
     }
