@@ -4,6 +4,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,8 +27,10 @@ public class GameController extends Thread {
 
     private ISFSObject levels;
     public ISFSObject getLevel(String id) {
-        return settings.getSFSObject(id);
+        return levels.getSFSObject(id);
     }
+
+    private Level level;
 
     private Field field;
 
@@ -40,7 +43,11 @@ public class GameController extends Thread {
         this.extension = extension;
         this.settings = settings;
         this.levels = levels;
+
         this.field = new Field(settings.getSFSObject("field"));
+
+        this.level = new Level(getLevel("1"));
+
         this.heroes = new ConcurrentHashMap<Integer, Hero>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
         this.monsters = new ConcurrentHashMap<Integer, Monster>();
@@ -48,9 +55,12 @@ public class GameController extends Thread {
     }
 
     public void createHero(int ownerId) {
+        int id = heroes.size();
+        Rectangle spawn = level.getHeroSpawn(id);
+
         Hero hero = new Hero(ownerId, settings.getSFSObject("hero"));
-        hero.x = Math.round(Math.random() * field.getWidth());
-        hero.y = Math.round(Math.random() * field.getHeight());
+        hero.x = spawn.getCenterX();
+        hero.y = spawn.getCenterY();
         hero.color = (int) (Math.random() * 0xFFFFFF);
         hero.weapon = Math.random() < 0.5 ? "m4" : "shotgun";
 		hero.lastRenderTime = System.currentTimeMillis();
@@ -94,9 +104,12 @@ public class GameController extends Thread {
     }
 
     public void createMonster() {
+        int id = (int) (Math.random() * level.getEnemySpawnCount());
+        Rectangle spawn = level.getEnemySpawn(id);
+
         Monster monster = new Monster(getEnemy("monster"));
-        monster.x = Math.round(Math.random() * field.getWidth());
-        monster.y = Math.round(Math.random() * field.getHeight());
+        monster.x = spawn.getCenterX();
+        monster.y = spawn.getCenterY();
         monster.direction = (float) (Math.random() * Math.PI * 2);
         monster.lastRenderTime = System.currentTimeMillis();
         monsters.put(monster.getItemId(), monster);
