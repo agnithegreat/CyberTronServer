@@ -6,6 +6,7 @@ import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSArray;
+import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.RoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
@@ -143,6 +144,12 @@ public class GameRoomExtension extends SFSExtension {
         }
         vars.add(new SFSRoomVariable(RoomProps.BULLETS, bulletsArray));
 
+        getApi().setRoomVariables(null, room, vars);
+    }
+
+    public void endGame(ISFSObject result) {
+        List<RoomVariable> vars = new ArrayList<RoomVariable>();
+        vars.add(new SFSRoomVariable(RoomProps.RESULT, result));
         getApi().setRoomVariables(null, room, vars);
     }
 }

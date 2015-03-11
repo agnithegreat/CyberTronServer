@@ -7,4 +7,5 @@ public class RoomProps {
     public static final String DATA = "data";
     public static final String BULLETS = "bullets";
     public static final String MONSTERS = "monsters";
+    public static final String RESULT = "result";
 }
