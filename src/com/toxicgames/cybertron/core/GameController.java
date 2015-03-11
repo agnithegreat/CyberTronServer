@@ -83,6 +83,12 @@ public class GameController extends Thread {
 		sendHeroData(hero);
 
         extension.setGameData(ownerId, settings);
+        extension.setLevelData(ownerId, level.getData());
+    }
+
+    public void updateForNewPlayer() {
+        updateHeroes();
+        saveBaseState();
     }
 
     public void updateHeroes() {
@@ -168,6 +174,8 @@ public class GameController extends Thread {
                     if (base.getBounds().intersects(monster.getBounds())) {
                         monsters.remove(monster.getItemId());
                         base.hp--;
+
+                        saveBaseState();
                     }
                 }
             }
@@ -301,6 +309,10 @@ public class GameController extends Thread {
 
     private void saveMonstersData() {
         extension.setMonstersPositions(monsters);
+    }
+
+    private void saveBaseState() {
+        extension.setBaseState(base.getData());
     }
 
     private void endGame(boolean win) {

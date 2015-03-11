@@ -41,6 +41,10 @@ public class Level {
         }
     }
 
+    public ISFSObject getData() {
+        return data;
+    }
+
     public int getId() {
         return data.getInt("id");
     }

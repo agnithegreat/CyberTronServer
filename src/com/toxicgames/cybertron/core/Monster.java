@@ -42,6 +42,7 @@ public class Monster extends GameItem {
         data.putInt(UserProps.POSX, getX());
         data.putInt(UserProps.POSY, getY());
         data.putFloat(UserProps.DIRECTION, direction);
+        data.putInt(UserProps.HP, hp);
 //        data.putFloat(UserProps.SPEED, getSpeed());
         return data;
     }

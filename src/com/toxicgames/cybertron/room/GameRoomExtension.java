@@ -78,7 +78,7 @@ public class GameRoomExtension extends SFSExtension {
 
     public void addHero(User user) {
         game.createHero(user.getId());
-        game.updateHeroes();
+        game.updateForNewPlayer();
     }
 
     public void removeHero(int userId)
@@ -91,7 +91,14 @@ public class GameRoomExtension extends SFSExtension {
     public void setGameData(int userId, ISFSObject data) {
         User user = room.getUserById(userId);
         List<RoomVariable> vars = new ArrayList<RoomVariable>();
-        vars.add(new SFSRoomVariable(RoomProps.DATA, data));
+        vars.add(new SFSRoomVariable(RoomProps.CONFIG_DATA, data));
+        getApi().setRoomVariables(user, room, vars);
+    }
+
+    public void setLevelData(int userId, ISFSObject data) {
+        User user = room.getUserById(userId);
+        List<RoomVariable> vars = new ArrayList<RoomVariable>();
+        vars.add(new SFSRoomVariable(RoomProps.LEVEL_DATA, data));
         getApi().setRoomVariables(user, room, vars);
     }
 
@@ -144,6 +151,12 @@ public class GameRoomExtension extends SFSExtension {
         }
         vars.add(new SFSRoomVariable(RoomProps.BULLETS, bulletsArray));
 
+        getApi().setRoomVariables(null, room, vars);
+    }
+
+    public void setBaseState(ISFSObject base) {
+        List<RoomVariable> vars = new ArrayList<RoomVariable>();
+        vars.add(new SFSRoomVariable(RoomProps.BASE, base));
         getApi().setRoomVariables(null, room, vars);
     }
 

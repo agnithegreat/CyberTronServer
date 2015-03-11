@@ -7,8 +7,8 @@
   <applyWordsFilterToPrivateMessages>true</applyWordsFilterToPrivateMessages>
   <isFilterBuddyMessages>true</isFilterBuddyMessages>
   <maxUsers>1000</maxUsers>
-  <maxUserVariablesAllowed>5</maxUserVariablesAllowed>
-  <maxRoomVariablesAllowed>5</maxRoomVariablesAllowed>
+  <maxUserVariablesAllowed>10</maxUserVariablesAllowed>
+  <maxRoomVariablesAllowed>10</maxRoomVariablesAllowed>
   <minRoomNameChars>3</minRoomNameChars>
   <maxRoomNameChars>32</maxRoomNameChars>
   <maxRooms>500</maxRooms>
