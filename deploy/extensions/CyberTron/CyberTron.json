@@ -34,12 +34,12 @@
         "shotgun": {
             "name": "shotgun",
             "speed": 500,
-            "damage": 10,
+            "damage": 20,
             "ammo": 7,
             "spread": 0.4,
             "shotamount": 5,
-            "cooldown": 0.5,
-            "reload": 2.5
+            "cooldown": 0.2,
+            "reload": 2
         }
     }
 }

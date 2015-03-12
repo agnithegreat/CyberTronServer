@@ -16,11 +16,7 @@ public class Hero extends GameItem {
 
     public float direction;
 
-    public int ammo;
-    public boolean isShooting;
-    public float shotCooldown;
-
-    public String weapon;
+    public Weapon weapon;
 
     public Hero(int ownerId, ISFSObject settings) {
         super(ownerId, settings);

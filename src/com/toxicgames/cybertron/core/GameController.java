@@ -76,7 +76,9 @@ public class GameController extends Thread {
         hero.width = hero.getHitRadius();
         hero.height = hero.getHitRadius();
         hero.color = (int) (Math.random() * 0xFFFFFF);
-        hero.weapon = Math.random() < 0.5 ? "m4" : "shotgun";
+
+        // TODO: remove randomized weapon
+        hero.weapon = new Weapon(getWeapon(Math.random() < 0.5 ? "m4" : "shotgun"));
 		hero.lastRenderTime = System.currentTimeMillis();
 		heroes.put(ownerId, hero);
 
@@ -120,7 +122,7 @@ public class GameController extends Thread {
     public void shotUser(int ownerId, boolean shoot, int reqId) {
         Hero hero = heroes.get(ownerId);
         hero.requestCounter = reqId;
-        hero.isShooting = shoot;
+        hero.weapon.isShooting = shoot;
     }
 
     public void createMonster() {
@@ -244,25 +246,19 @@ public class GameController extends Thread {
         hero.y += hero.deltaY * speed * delta;
         hero.y = Math.max(0, Math.min(hero.y, field.getHeight()));
 
-        hero.shotCooldown -= delta;
-        if (hero.isShooting && hero.shotCooldown <= 0) {
-            ISFSObject weapon = getWeapon(hero.weapon);
-            if (hero.ammo <= 0) {
-                hero.ammo = weapon.getInt("ammo");
+        hero.weapon.cooldown -= delta;
+        if (hero.weapon.isShooting && hero.weapon.cooldown <= 0) {
+            if (hero.weapon.ammo <= 0) {
+                hero.weapon.reload();
             }
-            if (hero.ammo > 0) {
-                hero.shotCooldown = weapon.getFloat("cooldown");
-                hero.ammo--;
+            if (hero.weapon.ammo > 0) {
+                hero.weapon.shot();
 
-                if (hero.ammo <= 0) {
-                    hero.shotCooldown = weapon.getFloat("reload");
-                }
-
-                int amount = weapon.getInt("shotamount");
-                double angle = weapon.getDouble("spread") / amount;
+                int amount = hero.weapon.getShotAmount();
+                double angle = hero.weapon.getSpread() / amount;
                 for (int i = 0; i < amount; i++) {
                     double direction = hero.direction + (i - amount/2) * angle;
-                    createBullet(hero.getOwnerId(), weapon, direction);
+                    createBullet(hero.getOwnerId(), hero.weapon.getData(), direction);
                 }
             }
         }
