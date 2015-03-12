@@ -258,7 +258,7 @@ public class GameController extends Thread {
                     hero.shotCooldown = weapon.getFloat("reload");
                 }
 
-                int amount = weapon.getInt("shot_amount");
+                int amount = weapon.getInt("shotamount");
                 double angle = weapon.getDouble("spread") / amount;
                 for (int i = 0; i < amount; i++) {
                     double direction = hero.direction + (i - amount/2) * angle;

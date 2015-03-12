@@ -29,7 +29,7 @@ public class Monster extends GameItem {
     }
 
     public int getHitRadius() {
-        return settings.getInt("hitRadius");
+        return settings.getInt("hitradius");
     }
 
     public int getSpeed() {

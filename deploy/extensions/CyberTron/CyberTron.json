@@ -1,36 +1,33 @@
 {
-	"field": {
-		"width": 600,
-		"height": 600
-	},
-
+    "field": {
+        "width": 600,
+        "height": 600
+    },
     "base": {
         "hp": 20
     },
-
     "hero": {
         "hp": 100,
         "speed": 100,
-        "hitRadius": 10,
-        "shotRadius": 12
+        "hitradius": 10,
+        "shotradius": 12
     },
-
     "enemies": {
         "monster": {
+            "name": "monster",
             "hp": 100,
             "speed": 100,
-            "hitRadius": 10
+            "hitradius": 10
         }
     },
-
     "weapons": {
         "m4": {
             "name": "m4",
             "speed": 500,
             "damage": 30,
             "ammo": 30,
-            "spread": 0.0,
-            "shot_amount": 1,
+            "spread": 0,
+            "shotamount": 1,
             "cooldown": 0.05,
             "reload": 1.5
         },
@@ -40,7 +37,7 @@
             "damage": 10,
             "ammo": 7,
             "spread": 0.4,
-            "shot_amount": 5,
+            "shotamount": 5,
             "cooldown": 0.5,
             "reload": 2.5
         }

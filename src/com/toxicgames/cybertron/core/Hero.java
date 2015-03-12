@@ -31,9 +31,9 @@ public class Hero extends GameItem {
     }
 
     public int getHitRadius() {
-        return settings.getInt("hitRadius");
+        return settings.getInt("hitradius");
     }
     public int getShotRadius() {
-        return settings.getInt("shotRadius");
+        return settings.getInt("shotradius");
     }
 }
