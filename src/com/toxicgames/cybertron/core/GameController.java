@@ -116,8 +116,6 @@ public class GameController extends Thread {
         Hero hero = heroes.get(ownerId);
         hero.requestCounter = reqId;
         hero.direction = direction;
-
-        saveHeroPosition(hero);
     }
 
     public void shotUser(int ownerId, boolean shoot, int reqId) {
@@ -159,12 +157,9 @@ public class GameController extends Thread {
 
             for (Iterator<Map.Entry<Integer, Hero>> it = heroes.entrySet().iterator(); it.hasNext(); ) {
                 Hero hero = it.next().getValue();
-                hero.requestCounter++;
                 renderHero(hero);
 
-                if (hero.deltaX != 0 || hero.deltaY != 0) {
-                    saveHeroPosition(hero);
-                }
+                saveHeroPosition(hero);
             }
 
             for (Iterator<Map.Entry<Integer, Monster>> mon = monsters.entrySet().iterator(); mon.hasNext(); ) {
@@ -239,13 +234,14 @@ public class GameController extends Thread {
         long now = System.currentTimeMillis();
         double delta = (now - hero.lastRenderTime) / 1000.0;
 
-        int mod = Math.abs(hero.deltaX) + Math.abs(hero.deltaY);
-        double speed = mod != 0 ? hero.getSpeed() / Math.sqrt(mod) : hero.getSpeed();
-
-        hero.x += hero.deltaX * speed * delta;
-        hero.x = Math.max(0, Math.min(hero.x, field.getWidth()));
-        hero.y += hero.deltaY * speed * delta;
-        hero.y = Math.max(0, Math.min(hero.y, field.getHeight()));
+        double mod = Math.sqrt(hero.deltaX * hero.deltaX + hero.deltaY * hero.deltaY);
+        if (mod > 0) {
+            double d = hero.getSpeed() / mod * delta;
+            hero.x += hero.deltaX * d;
+            hero.x = Math.max(0, Math.min(hero.x, field.getWidth()));
+            hero.y += hero.deltaY * d;
+            hero.y = Math.max(0, Math.min(hero.y, field.getHeight()));
+        }
 
         hero.weapon.cooldown -= delta;
         if (hero.weapon.isShooting && hero.weapon.cooldown <= 0) {

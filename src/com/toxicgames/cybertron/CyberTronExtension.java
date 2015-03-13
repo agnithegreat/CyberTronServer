@@ -57,7 +57,6 @@ public class CyberTronExtension extends SFSExtension {
             File file = (File) iterator.next();
             String levelData = FileUtils.readFileToString(file);
             ISFSObject level = SFSObject.newFromJsonData(levelData);
-            trace(level.getInt("id"), level.getInt("id").toString());
             levels.putSFSObject(level.getInt("id").toString(), level);
         }
     }
