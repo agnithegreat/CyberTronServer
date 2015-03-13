@@ -1,8 +1,8 @@
-package com.toxicgames.cybertron.core;
+package com.toxicgames.cybertron.core.entities;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSDataWrapper;
-import com.toxicgames.cybertron.utils.CastUtil;
+import com.toxicgames.cybertron.core.utils.CastUtil;
 
 /**
  * Created by kirillvirich on 12.03.15.

@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.core;
+package com.toxicgames.cybertron.core.entities;
 
 import com.smartfoxserver.v2.entities.data.ISFSArray;
 import com.smartfoxserver.v2.entities.data.ISFSObject;

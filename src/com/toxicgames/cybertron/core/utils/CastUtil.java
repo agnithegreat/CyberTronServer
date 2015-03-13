@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.utils;
+package com.toxicgames.cybertron.core.utils;
 
 /**
  * Created by mor on 13.03.2015.

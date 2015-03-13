@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.enums;
+package com.toxicgames.cybertron.core.enums;
 
 /**
  * Created by mor on 02.03.2015.

@@ -1,8 +1,8 @@
-package com.toxicgames.cybertron.core;
+package com.toxicgames.cybertron.core.entities;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.toxicgames.cybertron.enums.UserProps;
+import com.toxicgames.cybertron.core.enums.UserProps;
 
 /**
  * Created by kirillvirich on 04.03.15.

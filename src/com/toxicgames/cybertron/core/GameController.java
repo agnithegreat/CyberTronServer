@@ -3,6 +3,7 @@ package com.toxicgames.cybertron.core;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
+import com.toxicgames.cybertron.core.entities.*;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
 import java.awt.*;

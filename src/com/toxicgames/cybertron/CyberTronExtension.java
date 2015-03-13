@@ -4,7 +4,7 @@ import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.extensions.SFSExtension;
-import com.toxicgames.cybertron.enums.InternalCmd;
+import com.toxicgames.cybertron.core.enums.InternalCmd;
 import com.toxicgames.cybertron.handlers.UserLoginEventHandler;
 import org.apache.commons.io.FileUtils;
 

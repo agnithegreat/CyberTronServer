@@ -1,4 +1,4 @@
-package com.toxicgames.cybertron.enums;
+package com.toxicgames.cybertron.core.enums;
 
 /**
  * Created by kirillvirich on 06.03.15.
