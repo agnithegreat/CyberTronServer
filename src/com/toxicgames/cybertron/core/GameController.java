@@ -129,10 +129,11 @@ public class GameController extends Thread {
         saveHeroPosition(hero);
     }
 
-    public void shotUser(int ownerId, boolean shoot, int reqId) {
+    public void shotUser(int ownerId, int bulletId, double direction, int reqId) {
         Hero hero = heroes.get(ownerId);
         hero.requestCounter = reqId;
-        hero.weapon.isShooting = shoot;
+
+        createBullet(ownerId, bulletId, hero.weapon.getData(), direction);
     }
 
     public void createMonster() {
@@ -149,10 +150,10 @@ public class GameController extends Thread {
         monsters.put(monster.getItemId(), monster);
     }
 
-    public void createBullet(int ownerId, ISFSObject settings, double direction) {
+    public void createBullet(int ownerId, int bulletId, ISFSObject settings, double direction) {
         Hero hero = heroes.get(ownerId);
 
-        Bullet bullet = new Bullet(ownerId, settings, direction);
+        Bullet bullet = new Bullet(ownerId, bulletId, settings, direction);
         bullet.x = hero.x + (float) Math.cos(hero.direction) * hero.getShotRadius();
         bullet.y = hero.y + (float) Math.sin(hero.direction) * hero.getShotRadius();
 		bullet.lastRenderTime = System.currentTimeMillis();
@@ -244,21 +245,6 @@ public class GameController extends Thread {
         double delta = (now - hero.lastRenderTime) / 1000.0;
 
         hero.weapon.cooldown -= delta;
-        if (hero.weapon.isShooting && hero.weapon.cooldown <= 0) {
-            if (hero.weapon.ammo <= 0) {
-                hero.weapon.reload();
-            }
-            if (hero.weapon.ammo > 0) {
-                hero.weapon.shot();
-
-                int amount = hero.weapon.getShotAmount();
-                double angle = hero.weapon.getSpread() / amount;
-                for (int i = 0; i < amount; i++) {
-                    double direction = hero.direction + (i - amount/2) * angle;
-                    createBullet(hero.getOwnerId(), hero.weapon.getData(), direction);
-                }
-            }
-        }
 
         hero.lastRenderTime = now;
     }
@@ -289,7 +275,7 @@ public class GameController extends Thread {
     }
 
     private void sendHeroData(Hero hero) {
-		extension.setHeroData(hero.getOwnerId(), hero.getX(), hero.getY(), hero.color, hero.requestCounter);
+		extension.setHeroData(hero.getOwnerId(), hero.getX(), hero.getY(), hero.color, hero.weapon.getName(), hero.requestCounter);
 	}
 
     private void saveHeroPosition(Hero hero) {

@@ -9,18 +9,17 @@ import com.toxicgames.cybertron.core.enums.BulletProps;
  */
 public class Bullet extends GameItem {
 
-    static public int count = 0;
-
-    private int itemId = count++;
+    private int itemId;
     public int getItemId() {
         return itemId;
     }
 
     private double direction;
 
-    public Bullet(int ownerId, ISFSObject settings, double direction) {
+    public Bullet(int ownerId, int bulletId, ISFSObject settings, double direction) {
         super(ownerId, settings);
 
+        this.itemId = bulletId;
         this.direction = direction;
     }
 

@@ -16,7 +16,7 @@
         "monster": {
             "name": "monster",
             "hp": 100,
-            "speed": 100,
+            "speed": 70,
             "hitradius": 10
         }
     },

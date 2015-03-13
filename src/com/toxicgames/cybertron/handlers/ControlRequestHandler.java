@@ -5,6 +5,7 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
+import com.toxicgames.cybertron.core.enums.BulletProps;
 import com.toxicgames.cybertron.core.enums.ClientRequest;
 import com.toxicgames.cybertron.core.enums.UserProps;
 import com.toxicgames.cybertron.core.GameController;
@@ -32,7 +33,7 @@ public class ControlRequestHandler extends BaseClientRequestHandler {
         } else if (requestId.equals(ClientRequest.REQ_ROTATE)) {
             game.rotateHero(sender.getId(), params.getFloat(UserProps.DIRECTION), params.getInt(UserProps.REQ_ID));
         } else if (requestId.equals(ClientRequest.REQ_SHOT)) {
-            game.shotUser(sender.getId(), params.getBool(UserProps.SHOOT), params.getInt(UserProps.REQ_ID));
+            game.shotUser(sender.getId(), params.getInt(BulletProps.ID), params.getDouble(UserProps.DIRECTION), params.getInt(UserProps.REQ_ID));
         }
     }
 }

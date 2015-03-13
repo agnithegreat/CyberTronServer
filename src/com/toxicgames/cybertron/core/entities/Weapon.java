@@ -13,7 +13,6 @@ public class Weapon {
 
     public int ammo = 0;
 
-    public boolean isShooting;
     public double cooldown;
 
     public Weapon(ISFSObject settings) {
