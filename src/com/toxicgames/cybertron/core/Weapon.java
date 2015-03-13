@@ -2,6 +2,7 @@ package com.toxicgames.cybertron.core;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSDataWrapper;
+import com.toxicgames.cybertron.utils.CastUtil;
 
 /**
  * Created by kirillvirich on 12.03.15.
@@ -51,15 +52,7 @@ public class Weapon {
 
     public double getSpread() {
         SFSDataWrapper data = settings.get("spread");
-        return Utils.extractDouble(data.getObject());
-//        if (data.getTypeId() == SFSDataType.INT) {
-//            return (Integer) data.getObject() * 1.0;
-//        }
-
-//        Double.valueOf((String) data.getObject());
-
-//        return Double.valueOf(data.getObject().toString());
-//        return (Double) data.getObject();
+        return CastUtil.extractDouble(data.getObject());
     }
 
     public int getShotAmount() {
@@ -68,22 +61,11 @@ public class Weapon {
 
     public double getCooldown() {
         SFSDataWrapper data = settings.get("cooldown");
-        return Utils.extractDouble(data.getObject());
-//        if (data.getTypeId() == SFSDataType.INT) {
-//            return (Integer) data.getObject() * 1.0;
-//        }
-//        return Double.valueOf(data.getObject().toString());
-//        return (Double) data.getObject();
+        return CastUtil.extractDouble(data.getObject());
     }
 
     public double getReload() {
         SFSDataWrapper data = settings.get("reload");
-        return Utils.extractDouble(data.getObject());
-
-//        if (data.getTypeId() == SFSDataType.INT) {
-//            return (Integer) data.getObject() * 1.0;
-//        }
-//        return Double.valueOf(data.getObject().toString());
-//        return (Double) data.getObject();
+        return CastUtil.extractDouble(data.getObject());
     }
 }

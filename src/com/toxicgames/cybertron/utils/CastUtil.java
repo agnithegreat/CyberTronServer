@@ -1,9 +1,9 @@
-package com.toxicgames.cybertron.core;
+package com.toxicgames.cybertron.utils;
 
 /**
  * Created by mor on 13.03.2015.
  */
-public class Utils {
+public class CastUtil {
 
     public static double extractDouble(Object value)
     {
