@@ -5,6 +5,7 @@ package com.toxicgames.cybertron.core.enums;
  */
 public class UserProps {
     public static final String REQ_ID = "req_id";
+    public static final String TIME = "time";
 
     public static final String POSX = "posX";
     public static final String POSY = "posY";

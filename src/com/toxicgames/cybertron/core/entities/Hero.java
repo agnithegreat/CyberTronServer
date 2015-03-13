@@ -11,9 +11,6 @@ public class Hero extends GameItem {
 
     public int color = 0;
 
-    public int deltaX = 0;
-    public int deltaY = 0;
-
     public float direction;
 
     public Weapon weapon;

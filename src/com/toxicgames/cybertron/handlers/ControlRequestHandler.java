@@ -28,7 +28,7 @@ public class ControlRequestHandler extends BaseClientRequestHandler {
         GameController game = ((GameRoomExtension) this.getParentExtension()).getGame();
 
         if (requestId.equals(ClientRequest.REQ_MOVE)) {
-            game.moveHero(sender.getId(), params.getInt(UserProps.DELTAX), params.getInt(UserProps.DELTAY), params.getInt(UserProps.REQ_ID));
+            game.moveHero(sender.getId(), params.getInt(UserProps.DELTAX), params.getInt(UserProps.DELTAY), params.getInt(UserProps.REQ_ID), params.getDouble(UserProps.TIME));
         } else if (requestId.equals(ClientRequest.REQ_ROTATE)) {
             game.rotateHero(sender.getId(), params.getFloat(UserProps.DIRECTION), params.getInt(UserProps.REQ_ID));
         } else if (requestId.equals(ClientRequest.REQ_SHOT)) {

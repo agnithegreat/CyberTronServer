@@ -105,17 +105,28 @@ public class GameController extends Thread {
 		heroes.remove(ownerId);
 	}
 
-    public void moveHero(int ownerId, int deltaX, int deltaY, int reqId) {
+    public void moveHero(int ownerId, int deltaX, int deltaY, int reqId, double time) {
         Hero hero = heroes.get(ownerId);
         hero.requestCounter = reqId;
-        hero.deltaX = deltaX == 0 ? 0 : (deltaX > 0 ? 1 : -1);
-        hero.deltaY = deltaY == 0 ? 0 : (deltaY > 0 ? 1 : -1);
+
+        double mod = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (mod > 0) {
+            double d = hero.getSpeed() / mod * time;
+            hero.x += deltaX * d;
+            hero.x = Math.max(0, Math.min(hero.x, field.getWidth()));
+            hero.y += deltaY * d;
+            hero.y = Math.max(0, Math.min(hero.y, field.getHeight()));
+
+            saveHeroPosition(hero);
+        }
     }
 
     public void rotateHero(int ownerId, float direction, int reqId) {
         Hero hero = heroes.get(ownerId);
         hero.requestCounter = reqId;
         hero.direction = direction;
+
+        saveHeroPosition(hero);
     }
 
     public void shotUser(int ownerId, boolean shoot, int reqId) {
@@ -158,8 +169,6 @@ public class GameController extends Thread {
             for (Iterator<Map.Entry<Integer, Hero>> it = heroes.entrySet().iterator(); it.hasNext(); ) {
                 Hero hero = it.next().getValue();
                 renderHero(hero);
-
-                saveHeroPosition(hero);
             }
 
             for (Iterator<Map.Entry<Integer, Monster>> mon = monsters.entrySet().iterator(); mon.hasNext(); ) {
@@ -233,15 +242,6 @@ public class GameController extends Thread {
     private void renderHero(Hero hero) {
         long now = System.currentTimeMillis();
         double delta = (now - hero.lastRenderTime) / 1000.0;
-
-        double mod = Math.sqrt(hero.deltaX * hero.deltaX + hero.deltaY * hero.deltaY);
-        if (mod > 0) {
-            double d = hero.getSpeed() / mod * delta;
-            hero.x += hero.deltaX * d;
-            hero.x = Math.max(0, Math.min(hero.x, field.getWidth()));
-            hero.y += hero.deltaY * d;
-            hero.y = Math.max(0, Math.min(hero.y, field.getHeight()));
-        }
 
         hero.weapon.cooldown -= delta;
         if (hero.weapon.isShooting && hero.weapon.cooldown <= 0) {
