@@ -1,7 +1,6 @@
 package com.toxicgames.cybertron.core;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSDataType;
 import com.smartfoxserver.v2.entities.data.SFSDataWrapper;
 
 /**
@@ -52,10 +51,15 @@ public class Weapon {
 
     public double getSpread() {
         SFSDataWrapper data = settings.get("spread");
-        if (data.getTypeId() == SFSDataType.INT) {
-            return (Integer) data.getObject() * 1.0;
-        }
-        return (Double) data.getObject();
+        return Utils.extractDouble(data.getObject());
+//        if (data.getTypeId() == SFSDataType.INT) {
+//            return (Integer) data.getObject() * 1.0;
+//        }
+
+//        Double.valueOf((String) data.getObject());
+
+//        return Double.valueOf(data.getObject().toString());
+//        return (Double) data.getObject();
     }
 
     public int getShotAmount() {
@@ -64,17 +68,22 @@ public class Weapon {
 
     public double getCooldown() {
         SFSDataWrapper data = settings.get("cooldown");
-        if (data.getTypeId() == SFSDataType.INT) {
-            return (Integer) data.getObject() * 1.0;
-        }
-        return (Double) data.getObject();
+        return Utils.extractDouble(data.getObject());
+//        if (data.getTypeId() == SFSDataType.INT) {
+//            return (Integer) data.getObject() * 1.0;
+//        }
+//        return Double.valueOf(data.getObject().toString());
+//        return (Double) data.getObject();
     }
 
     public double getReload() {
         SFSDataWrapper data = settings.get("reload");
-        if (data.getTypeId() == SFSDataType.INT) {
-            return (Integer) data.getObject() * 1.0;
-        }
-        return (Double) data.getObject();
+        return Utils.extractDouble(data.getObject());
+
+//        if (data.getTypeId() == SFSDataType.INT) {
+//            return (Integer) data.getObject() * 1.0;
+//        }
+//        return Double.valueOf(data.getObject().toString());
+//        return (Double) data.getObject();
     }
 }
