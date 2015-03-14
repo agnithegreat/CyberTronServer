@@ -41,5 +41,13 @@
             "cooldown": 0.2,
             "reload": 2
         }
+    },
+    "towers": {
+        "tower": {
+            "name": "tower",
+            "damage": 30,
+            "cooldown": 0.3,
+            "radius": 50
+        }
     }
 }

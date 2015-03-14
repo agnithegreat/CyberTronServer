@@ -4,6 +4,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
 import com.toxicgames.cybertron.core.entities.*;
+import com.toxicgames.cybertron.core.entities.enemies.Monster;
+import com.toxicgames.cybertron.core.entities.towers.Tower;
 import com.toxicgames.cybertron.room.GameRoomExtension;
 
 import java.awt.*;
@@ -41,6 +43,7 @@ public class GameController extends Thread {
     private Base base;
 
     private Map<Integer, Hero> heroes;
+    private Map<Integer, Tower> towers;
     private Map<Integer, Bullet> bullets;
     private Map<Integer, Monster> monsters;
     private float spawnTimeleft = 1;
@@ -62,6 +65,7 @@ public class GameController extends Thread {
         base.height = level.getBase().height;
 
         this.heroes = new ConcurrentHashMap<Integer, Hero>();
+        this.towers = new ConcurrentHashMap<Integer, Tower>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
         this.monsters = new ConcurrentHashMap<Integer, Monster>();
         this.lastRenderTime = System.currentTimeMillis();

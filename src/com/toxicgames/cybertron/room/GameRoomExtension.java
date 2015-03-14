@@ -14,7 +14,7 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
 import com.smartfoxserver.v2.game.SFSGame;
 import com.toxicgames.cybertron.core.entities.Bullet;
 import com.toxicgames.cybertron.core.GameController;
-import com.toxicgames.cybertron.core.entities.Monster;
+import com.toxicgames.cybertron.core.entities.enemies.Monster;
 import com.toxicgames.cybertron.core.enums.ClientRequest;
 import com.toxicgames.cybertron.core.enums.InternalCmd;
 import com.toxicgames.cybertron.core.enums.RoomProps;
