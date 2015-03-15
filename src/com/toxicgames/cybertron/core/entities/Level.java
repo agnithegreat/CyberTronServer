@@ -2,7 +2,6 @@ package com.toxicgames.cybertron.core.entities;
 
 import com.smartfoxserver.v2.entities.data.ISFSArray;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 
 import java.awt.Rectangle;
 import java.util.Map;
@@ -15,30 +14,29 @@ public class Level {
 
     private ISFSObject data;
 
+    public int cellWidth;
+    public int cellHeight;
+
     private Rectangle base;
 
+    private Map<Integer, Rectangle> walls;
+    private Map<Integer, Rectangle> towers;
     private Map<Integer, Rectangle> heroes;
     private Map<Integer, Rectangle> enemies;
 
     public Level(ISFSObject data) {
         this.data = data;
 
-        ISFSObject baseObj = data.getSFSObject("base");
-        base = new Rectangle(baseObj.getInt("x"), baseObj.getInt("y"), baseObj.getInt("width"), baseObj.getInt("height"));
+        ISFSObject cellSize = data.getSFSObject("cellSize");
+        cellWidth = cellSize.getInt("width");
+        cellHeight = cellSize.getInt("height");
 
-        heroes = new ConcurrentHashMap<Integer, Rectangle>();
-        ISFSArray heroesArr = data.getSFSArray("heroes");
-        for (int i = 0; i < heroesArr.size(); i++) {
-            ISFSObject hero = heroesArr.getSFSObject(i);
-            heroes.put(i, new Rectangle(hero.getInt("x"), hero.getInt("y"), hero.getInt("width"), hero.getInt("height")));
-        }
+        base = convertToRect(data.getSFSObject("base"));
 
-        enemies = new ConcurrentHashMap<Integer, Rectangle>();
-        ISFSArray enemiesArr = data.getSFSArray("enemies");
-        for (int i = 0; i < enemiesArr.size(); i++) {
-            ISFSObject enemy = enemiesArr.getSFSObject(i);
-            enemies.put(i, new Rectangle(enemy.getInt("x"), enemy.getInt("y"), enemy.getInt("width"), enemy.getInt("height")));
-        }
+        walls = convertToRectMap(data.getSFSArray("walls"));
+        towers = convertToRectMap(data.getSFSArray("towers"));
+        heroes = convertToRectMap(data.getSFSArray("heroes"));
+        enemies = convertToRectMap(data.getSFSArray("enemies"));
     }
 
     public ISFSObject getData() {
@@ -61,11 +59,32 @@ public class Level {
         return enemies.size();
     }
 
+    public Map<Integer, Rectangle> getWalls() {
+        return walls;
+    }
+    public Map<Integer, Rectangle> getTowers() {
+        return towers;
+    }
+
     public Rectangle getHeroSpawn(int id) {
         return heroes.get(id);
     }
 
     public Rectangle getEnemySpawn(int id) {
         return enemies.get(id);
+    }
+
+
+    private static Map<Integer, Rectangle> convertToRectMap(ISFSArray arr) {
+        Map<Integer, Rectangle> map = new ConcurrentHashMap<Integer, Rectangle>();
+        int l = arr.size();
+        for (int i = 0; i < l; i++) {
+            map.put(i, convertToRect(arr.getSFSObject(i)));
+        }
+        return map;
+    }
+
+    private static Rectangle convertToRect(ISFSObject data) {
+        return new Rectangle(data.getInt("x"), data.getInt("y"), data.getInt("width"), data.getInt("height"));
     }
 }

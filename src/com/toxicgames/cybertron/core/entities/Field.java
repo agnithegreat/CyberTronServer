@@ -9,8 +9,15 @@ public class Field {
 
     private ISFSObject settings;
 
+    public int width;
+    public int height;
+
     public Field(ISFSObject settings) {
         this.settings = settings;
+    }
+
+    public int getCellId(int x, int y) {
+        return y * width + x;
     }
 
     public int getWidth() {

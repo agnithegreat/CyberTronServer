@@ -4,6 +4,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.toxicgames.cybertron.core.entities.GameItem;
 import com.toxicgames.cybertron.core.enums.UserProps;
+import pathfinder.GraphNode;
 
 /**
  * Created by kirillvirich on 04.03.15.
@@ -17,6 +18,8 @@ public class Monster extends GameItem {
         return itemId;
     }
 
+    public GraphNode[] path;
+    public int node;
     public float direction;
 
     public int hp;

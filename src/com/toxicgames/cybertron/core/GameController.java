@@ -3,10 +3,15 @@ package com.toxicgames.cybertron.core;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
+
 import com.toxicgames.cybertron.core.entities.*;
 import com.toxicgames.cybertron.core.entities.enemies.Monster;
 import com.toxicgames.cybertron.core.entities.towers.Tower;
 import com.toxicgames.cybertron.room.GameRoomExtension;
+
+import pathfinder.Graph;
+import pathfinder.GraphNode;
+import pathfinder.GraphSearch_Astar;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -42,12 +47,17 @@ public class GameController extends Thread {
 
     private Base base;
 
+    private Graph graph;
+    private GraphSearch_Astar pathFinder;
+
     private Map<Integer, Hero> heroes;
     private Map<Integer, Tower> towers;
     private Map<Integer, Bullet> bullets;
     private Map<Integer, Monster> monsters;
     private float spawnTimeleft = 1;
     private int monstersLeft = 50;
+
+    private String[] weapons;
 
     public GameController(GameRoomExtension extension, ISFSObject settings, ISFSObject levels) {
         this.extension = extension;
@@ -58,17 +68,55 @@ public class GameController extends Thread {
 
         this.level = new Level(getLevel("1"));
 
-        this.base = new Base(settings.getSFSObject("base"));
-        base.x = level.getBase().getCenterX();
-        base.y = level.getBase().getCenterY();
-        base.width = level.getBase().width;
-        base.height = level.getBase().height;
+        this.base = new Base(level.getBase(), settings.getSFSObject("base"));
 
         this.heroes = new ConcurrentHashMap<Integer, Hero>();
         this.towers = new ConcurrentHashMap<Integer, Tower>();
         this.bullets = new ConcurrentHashMap<Integer, Bullet>();
         this.monsters = new ConcurrentHashMap<Integer, Monster>();
         this.lastRenderTime = System.currentTimeMillis();
+
+        this.weapons = new String[4];
+        this.weapons[0] = "m4";
+        this.weapons[1] = "shotgun";
+        this.weapons[2] = "m4";
+        this.weapons[3] = "shotgun";
+
+        initLevel();
+    }
+
+    private void initLevel() {
+        field.width = field.getWidth() / level.cellWidth;
+        field.height = field.getHeight() / level.cellHeight;
+
+        this.graph = new Graph(field.width * field.height);
+
+        for (int i = 0; i < field.width; i++) {
+            for (int j = 0; j < field.height; j++) {
+                int id = field.getCellId(i, j);
+                graph.addNode(new GraphNode(id, i, j));
+                if (i > 0) {
+                    graph.addEdge(field.getCellId(i-1, j), id, 1, 1);
+                }
+                if (j > 0) {
+                    graph.addEdge(field.getCellId(i, j-1), id, 1, 1);
+                }
+                if (i > 0 && j > 0) {
+                    graph.addEdge(field.getCellId(i-1, j-1), id, Math.sqrt(2), Math.sqrt(2));
+                }
+            }
+        }
+
+        Map<Integer, Rectangle> walls = level.getWalls();
+        int l = walls.size();
+        for (int i = 0; i < l; i++) {
+            Rectangle wall = walls.get(i);
+            int x = wall.x / level.cellWidth;
+            int y = wall.y / level.cellHeight;
+            graph.removeNode(field.getCellId(x, y));
+        }
+
+        this.pathFinder = new GraphSearch_Astar(graph);
     }
 
     public void createHero(int ownerId) {
@@ -83,7 +131,7 @@ public class GameController extends Thread {
         hero.color = (int) (Math.random() * 0xFFFFFF);
 
         // TODO: remove randomized weapon
-        hero.weapon = new Weapon(getWeapon(Math.random() < 0.5 ? "m4" : "shotgun"));
+        hero.weapon = new Weapon(getWeapon(weapons[id]));
 		hero.lastRenderTime = System.currentTimeMillis();
 		heroes.put(ownerId, hero);
 
@@ -149,7 +197,6 @@ public class GameController extends Thread {
         monster.y = spawn.getCenterY();
         monster.width = monster.getHitRadius();
         monster.height = monster.getHitRadius();
-        monster.direction = (float) (Math.random() * Math.PI * 2);
         monster.lastRenderTime = System.currentTimeMillis();
         monsters.put(monster.getItemId(), monster);
     }
@@ -257,14 +304,30 @@ public class GameController extends Thread {
         long now = System.currentTimeMillis();
         double delta = (now - monster.lastRenderTime) / 1000.0;
 
+        int x = (int) monster.x / level.cellWidth;
+        int y = (int) monster.y / level.cellHeight;
+
+        if (monster.path == null) {
+            int baseX = base.getX() / level.cellWidth;
+            int baseY = base.getY() / level.cellHeight;
+            pathFinder.search(field.getCellId(x, y), field.getCellId(baseX, baseY));
+            monster.path = pathFinder.getRoute();
+            monster.node = 0;
+        }
+
+        GraphNode node = monster.path[monster.node];
+        while (node.x() == x && node.y() == y) {
+            node = monster.path[++monster.node];
+        }
+
+        double dx = node.x() - x;
+        double dy = node.y() - y;
+        monster.direction = (float) Math.atan2(dy, dx);
+
         monster.x += Math.cos(monster.direction) * monster.getSpeed() * delta;
         monster.x = Math.max(0, Math.min(monster.x, field.getWidth()));
         monster.y += Math.sin(monster.direction) * monster.getSpeed() * delta;
         monster.y = Math.max(0, Math.min(monster.y, field.getHeight()));
-
-        double dx = base.x - monster.x;
-        double dy = base.y - monster.y;
-        monster.direction = (float) Math.atan2(dy, dx);
 
         monster.lastRenderTime = now;
     }
