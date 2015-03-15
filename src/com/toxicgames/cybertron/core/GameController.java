@@ -35,6 +35,9 @@ public class GameController extends Thread {
     public ISFSObject getEnemy(String name) {
         return settings.getSFSObject("enemies").getSFSObject(name);
     }
+    public ISFSObject getTower(String name) {
+        return settings.getSFSObject("towers").getSFSObject(name);
+    }
 
     private ISFSObject levels;
     public ISFSObject getLevel(String id) {
@@ -83,6 +86,7 @@ public class GameController extends Thread {
         this.weapons[3] = "shotgun";
 
         initLevel();
+        initTowers();
     }
 
     private void initLevel() {
@@ -94,16 +98,16 @@ public class GameController extends Thread {
         for (int i = 0; i < field.width; i++) {
             for (int j = 0; j < field.height; j++) {
                 int id = field.getCellId(i, j);
-                graph.addNode(new GraphNode(id, i, j));
+                graph.addNode(new GraphNode(id, i+0.5, j+0.5));
                 if (i > 0) {
                     graph.addEdge(field.getCellId(i-1, j), id, 1, 1);
                 }
                 if (j > 0) {
                     graph.addEdge(field.getCellId(i, j-1), id, 1, 1);
                 }
-                if (i > 0 && j > 0) {
-                    graph.addEdge(field.getCellId(i-1, j-1), id, Math.sqrt(2), Math.sqrt(2));
-                }
+//                if (i > 0 && j > 0) {
+//                    graph.addEdge(field.getCellId(i-1, j-1), id, Math.sqrt(2), Math.sqrt(2));
+//                }
             }
         }
 
@@ -119,6 +123,14 @@ public class GameController extends Thread {
         this.pathFinder = new GraphSearch_Astar(graph);
     }
 
+    private void initTowers() {
+        Map<Integer, Rectangle> towers = level.getTowers();
+        int l = towers.size();
+        for (int i = 0; i < l; i++) {
+            createTower(i, towers.get(i));
+        }
+    }
+
     public void createHero(int ownerId) {
         int id = heroes.size();
         Rectangle spawn = level.getHeroSpawn(id);
@@ -130,8 +142,9 @@ public class GameController extends Thread {
         hero.height = hero.getHitRadius();
         hero.color = (int) (Math.random() * 0xFFFFFF);
 
-        // TODO: remove randomized weapon
+        // TODO: remove stub
         hero.weapon = new Weapon(getWeapon(weapons[id]));
+
 		hero.lastRenderTime = System.currentTimeMillis();
 		heroes.put(ownerId, hero);
 
@@ -188,6 +201,20 @@ public class GameController extends Thread {
         createBullet(ownerId, bulletId, hero.weapon.getData(), direction);
     }
 
+    public void createTower(int id, Rectangle place) {
+        Tower tower = new Tower(id, getTower("tower"));
+        tower.x = place.getCenterX();
+        tower.y = place.getCenterY();
+        tower.width = place.width;
+        tower.height = place.height;
+
+        // TODO: remove stub
+        tower.weapon = new Weapon(getWeapon("tower"));
+
+        tower.lastRenderTime = System.currentTimeMillis();
+        towers.put(tower.getItemId(), tower);
+    }
+
     public void createMonster() {
         int id = (int) (Math.random() * level.getEnemySpawnCount());
         Rectangle spawn = level.getEnemySpawn(id);
@@ -210,6 +237,15 @@ public class GameController extends Thread {
 		bullet.lastRenderTime = System.currentTimeMillis();
 
 		bullets.put(bullet.getItemId(), bullet);
+    }
+
+    public void createTowerBullet(Tower tower, int bulletId, ISFSObject settings, double direction) {
+        Bullet bullet = new Bullet(0, bulletId, settings, direction);
+        bullet.x = tower.x;
+        bullet.y = tower.y;
+        bullet.lastRenderTime = System.currentTimeMillis();
+
+        bullets.put(bullet.getItemId(), bullet);
     }
 
     @Override
@@ -245,6 +281,11 @@ public class GameController extends Thread {
                 monstersLeft--;
 
                 createMonster();
+            }
+
+            for (Iterator<Map.Entry<Integer, Tower>> it = towers.entrySet().iterator(); it.hasNext(); ) {
+                Tower tower = it.next().getValue();
+                renderTower(tower);
             }
 
             for (Iterator<Map.Entry<Integer, Bullet>> it = bullets.entrySet().iterator(); it.hasNext(); ) {
@@ -294,15 +335,54 @@ public class GameController extends Thread {
     private void renderHero(Hero hero) {
         long now = System.currentTimeMillis();
         double delta = (now - hero.lastRenderTime) / 1000.0;
+        hero.lastRenderTime = now;
 
         hero.weapon.cooldown -= delta;
+    }
 
-        hero.lastRenderTime = now;
+    private void renderTower(Tower tower) {
+        long now = System.currentTimeMillis();
+        double delta = (now - tower.lastRenderTime) / 1000.0;
+        tower.lastRenderTime = now;
+
+        tower.weapon.cooldown -= delta;
+
+        Monster target = null;
+        for (Iterator<Map.Entry<Integer, Monster>> mon = monsters.entrySet().iterator(); mon.hasNext(); ) {
+            Monster monster = mon.next().getValue();
+            double dx = monster.x - tower.x;
+            double dy = monster.y - tower.y;
+            double d = Math.sqrt(dx*dx + dy*dy);
+            if (d <= tower.getRadius()) {
+                target = monster;
+            }
+        }
+
+        if (target != null && tower.weapon.cooldown <= 0) {
+            if (tower.weapon.ammo <= 0) {
+                tower.weapon.reload();
+            }
+            if (tower.weapon.ammo > 0) {
+                tower.weapon.shot();
+
+                double dx = target.x - tower.x;
+                double dy = target.y - tower.y;
+                double dir = Math.atan2(dy, dx);
+
+                int amount = tower.weapon.getShotAmount();
+                double angle = tower.weapon.getSpread() / amount;
+                for (int i = 0; i < amount; i++) {
+                    double direction = dir + (i - amount/2) * angle;
+                    createTowerBullet(tower, (int) (Math.random() * 50000), tower.weapon.getData(), direction);
+                }
+            }
+        }
     }
 
     private void renderMonster(Monster monster) {
         long now = System.currentTimeMillis();
         double delta = (now - monster.lastRenderTime) / 1000.0;
+        monster.lastRenderTime = now;
 
         int x = (int) monster.x / level.cellWidth;
         int y = (int) monster.y / level.cellHeight;
@@ -316,29 +396,27 @@ public class GameController extends Thread {
         }
 
         GraphNode node = monster.path[monster.node];
-        while (node.x() == x && node.y() == y) {
+        while (node.x() == x+0.5 && node.y() == y+0.5) {
             node = monster.path[++monster.node];
         }
 
-        double dx = node.x() - x;
-        double dy = node.y() - y;
+        double dx = node.x() * level.cellWidth - monster.x;
+        double dy = node.y() * level.cellHeight - monster.y;
         monster.direction = (float) Math.atan2(dy, dx);
 
         monster.x += Math.cos(monster.direction) * monster.getSpeed() * delta;
         monster.x = Math.max(0, Math.min(monster.x, field.getWidth()));
         monster.y += Math.sin(monster.direction) * monster.getSpeed() * delta;
         monster.y = Math.max(0, Math.min(monster.y, field.getHeight()));
-
-        monster.lastRenderTime = now;
     }
 
     private void renderBullet(Bullet bullet) {
         long now = System.currentTimeMillis();
         double delta = (now - bullet.lastRenderTime) / 1000.0;
+        bullet.lastRenderTime = now;
 
         bullet.x += Math.cos(bullet.getDirection()) * bullet.getSpeed() * delta;
         bullet.y += Math.sin(bullet.getDirection()) * bullet.getSpeed() * delta;
-        bullet.lastRenderTime = now;
     }
 
     private void sendHeroData(Hero hero) {

@@ -3,6 +3,7 @@ package com.toxicgames.cybertron.core.entities.towers;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSDataWrapper;
 import com.toxicgames.cybertron.core.entities.GameItem;
+import com.toxicgames.cybertron.core.entities.Weapon;
 import com.toxicgames.cybertron.core.utils.CastUtil;
 
 /**
@@ -10,10 +11,18 @@ import com.toxicgames.cybertron.core.utils.CastUtil;
  */
 public class Tower extends GameItem {
 
-    public double cooldown;
+    private int itemId;
 
-    public Tower(ISFSObject settings) {
+    public Weapon weapon;
+
+    public Tower(int id, ISFSObject settings) {
         super(0, settings);
+
+        this.itemId = id;
+    }
+
+    public int getItemId() {
+        return itemId;
     }
 
     public ISFSObject getData() {

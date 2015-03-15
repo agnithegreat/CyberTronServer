@@ -139,7 +139,6 @@ public class GameRoomExtension extends SFSExtension {
         vars.add(new SFSRoomVariable(RoomProps.MONSTERS, monstersArray));
 
         getApi().setRoomVariables(null, room, vars);
-
     }
     public void setBulletsPositions(Map<Integer, Bullet> bullets) {
         List<RoomVariable> vars = new ArrayList<RoomVariable>();

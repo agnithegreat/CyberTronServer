@@ -40,6 +40,16 @@
             "shotamount": 5,
             "cooldown": 0.2,
             "reload": 2
+        },
+        "tower": {
+            "name": "tower",
+            "speed": 500,
+            "damage": 20,
+            "ammo": 1,
+            "spread": 0,
+            "shotamount": 1,
+            "cooldown": 0.5,
+            "reload": 0.5
         }
     },
     "towers": {
